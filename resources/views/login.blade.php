@@ -51,9 +51,9 @@
                         <div class="invalid-feedback">
                             please fill in your password
                             </div>
-                            {{-- @error('password')
+                            @error('password')
                                 {{$message}}
-                            @enderror --}}
+                            @enderror
                         </div>
 
                         <div class="form-group">

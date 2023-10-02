@@ -16,23 +16,10 @@ class TodoController extends Controller
      */
     public function index()
     {
-        // $user = auth()->user();
-        // dd($user);
-        // $arr = Todo::where('user_id',$user->id)->get();
-        // $tab = Todo::all(['name']);
-        // // dd($tab);
-        
-        $arr = Todo::get();
+        $user = auth()->user();
+        $arr = Todo::where('user_id',$user->id)->get();
         return view('welcome', compact('arr'));
 
-    }
-
-    public function indexapi(Request $request)
-    {
-        $arr = Todo::get();
-        return response()->json([
-            $arr
-        ]);
     }
 
     /**
@@ -54,10 +41,11 @@ class TodoController extends Controller
      */
     public function store(createtodo $request)
     {
+        $user = auth()->user();
         $todo = Todo::create([
             'name'=> $request->input('name'),
             'description'=> $request->input('description'),
-            'user_id'=> 1
+            'user_id'=> $user->id
         ]);
         return redirect()->route('welcome')->with('success','Todo successfully saved');
     }
@@ -91,22 +79,7 @@ class TodoController extends Controller
         return redirect()->route('welcome')->with('success','Todo successfully edited');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-
-     public function destroy_web($id)
+    public function destroy_web($id)
      {
          $todo = Todo::find($id);
          if (is_null($todo)) {
@@ -124,6 +97,23 @@ class TodoController extends Controller
         ]);
     }
 
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Todo  $todo
+     * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Todo  $todo
+     * @return \Illuminate\Http\Response
+     */
+
+
     public function find ($id){
         $todo = Todo::findOrFail($id);
 
@@ -135,6 +125,14 @@ class TodoController extends Controller
     }
 
     // API FUNCTIONS
+
+    public function indexapi(Request $request)
+    {
+        $arr = Todo::get();
+        return response()->json([
+            $arr
+        ]);
+    }
 
     public function destroy_api($id)
     {
