@@ -33,8 +33,13 @@
                     <form method="POST" action="{{route('auth.login')}}" class="needs-validation" novalidate="">
                         @csrf
                         <div class="form-group">
+                            <div class="d-block">
+                            <label for="name" class="control-label">Password</label>
+                            <input id="name" type="text" class="form-control" name="name" tabindex="1" required>
+                        </div>
+                        <div class="form-group">
                             <label for="email">Email</label>
-                            <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus value="{{old('email')}}">
+                            <input id="email" type="email" class="form-control" name="email" tabindex="2" required autofocus value="{{old('email')}}">
                         </div>
                         <div class="invalid-feedback">
                             Please fill in your email
@@ -45,8 +50,7 @@
                         <div class="form-group">
                             <div class="d-block">
                             <label for="password" class="control-label">Password</label>
-                            <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
-
+                            <input id="password" type="password" class="form-control" name="password" tabindex="3" required>
                         </div>
                         <div class="invalid-feedback">
                             please fill in your password
@@ -56,11 +60,6 @@
                             @enderror
                         </div>
 
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
-                            Login
-                            </button>
-                        </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
                             s'inscrire

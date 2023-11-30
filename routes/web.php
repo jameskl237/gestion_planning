@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodoController;
+use App\Http\Controllers\UserController;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Routing\Route as RoutingRoute;
@@ -24,6 +25,7 @@ require __DIR__.'/auth.php';
 
 Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/login',[AuthController::class,'dologin']);
+Route::get('inscrire',[UserController::class,'store'])->
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/', [TodoController::class,'index'])->name('welcome');
