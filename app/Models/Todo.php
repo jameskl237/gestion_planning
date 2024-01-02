@@ -13,11 +13,20 @@ class Todo extends Model
     protected $fillable = [
         'name',
         'description',
+        'date_debut',
+        'date_fin',
+        'heure_debut',
+        'heure_fin',
         'user_id',
     ];
 
-    public function todos(): BelongsTo
+    public function users(): BelongsTo
     {
-        return $this->belongsTo(Todo::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function taches()
+    {
+        return $this->belongsToMany(User::class);
     }
 }

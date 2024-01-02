@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ColorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +25,7 @@ Route::post('todo',[TodoController::class,'store']);
 Route::put('todo/{id}',[TodoController::class,'update']);
 Route::delete('todo/{id}',[TodoController::class,'destroy']);
 Route::get('todo/{id}',[TodoController::class,'show']);
+
+Route::post('/color',[ColorController::class,'updateColor']);
+
+Route::post('/login',[AuthController::class, 'dologin_api']);

@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ColorController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodoController;
+use App\Http\Controllers\UserController;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Routing\Route as RoutingRoute;
@@ -24,18 +26,34 @@ require __DIR__.'/auth.php';
 
 Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/login',[AuthController::class,'dologin']);
+Route::get('/inscrire',[UserController::class,'index'])->name('inscrire');
+Route::post('/inscrire',[UserController::class,'store'])->name('new');
 Route::middleware('auth')->group(function () {
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/', [TodoController::class,'index'])->name('welcome');
-    Route::get('/{todo}/info',[TodoController::class,'info'])->name('info');
-    // Route::post('/{todo}/info',[TodoController::class,'info']);
-    Route::delete('/destroy/{id}',[TodoController::class,'destroy_web'])->name('destroy');
-    Route::get('/new', [TodoController::class, 'create'])->name('create');
-    Route::post('/new',[TodoController::class, 'store']);
-    Route::get('/{todo}/edit', [TodoController::class, 'edit'])->name('edit');
-    Route::patch('/{todo}/edit', [TodoController::class, 'update']);
-});
 
+    Route::get('/profil',[UserController::class, 'profil'])->name('profil');
+    Route::get('/programmer', [UserController::class , 'getPersonnel'])->name('programmer');
+
+    Route::resource('todo',TodoController::class);
+
+
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+    Route::prefix('/')->controller(TodoController::class)->group(function(){
+        Route::get('/', 'index')->name('welcome');
+        Route::get('/{todo}/info', 'info')->name('info');
+        Route::delete('/destroy/{id}', 'destroy_web')->name('destroy');
+        Route::get('/new', 'create')->name('create');
+        Route::put('/update/{id}', 'edit')->name('tache_update');
+        Route::get('/notification', 'notification')->name('notif');
+        Route::post('/store_sub', 'store_sub')->name('store_sub');
+        Route::get('/notif', 'controle_notification');
+        Route::post('/is_view/{id}', 'is_view')->name('is_view');
+
+
+        // Route::get('/programmation', 'programmer')->name('programmer');
+    });
+});
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');

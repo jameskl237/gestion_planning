@@ -20,9 +20,15 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'prenom' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
+            'image' => $this->faker->word(),
+            'color' => $this->faker->word(),
+            'telephone'=> $this->faker->phoneNumber(),
             'email_verified_at' => now(),
             'password' => Hash::make('ayobo'), // password
+            'role_id'=> $this->faker->numberBetween(1,5),
+            'departement_id'=> $this->faker->numberBetween(1,7),
             'remember_token' => Str::random(10),
         ];
     }

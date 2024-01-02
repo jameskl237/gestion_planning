@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Otika - Admin Dashboard Template</title>
+  <title>PLANNING</title>
   <!-- General CSS Files -->
   <link rel="stylesheet" href="assets/css/app.min.css">
   <link rel="stylesheet" href="assets/bundles/bootstrap-social/bootstrap-social.css">
@@ -30,7 +30,7 @@
                 <h4>se connecter</h4>
               </div>
               <div class="card-body">
-                    <form method="POST" action="{{route('auth.login')}}" class="needs-validation" novalidate="">
+                    <form method="POST" action="" class="needs-validation" novalidate="">
                         @csrf
                         <div class="form-group">
                             <label for="email">Email</label>
@@ -62,6 +62,11 @@
                             </button>
                         </div>
                     </form>
+                    <div class="form-group">
+                        <a class="btn btn-primary btn-action mr-1 mt-2 mb-4" href="{{route('inscrire')}}" title="s'incrire">
+                            <i class="fas fa-pencil-alt"></i> s'inscrire
+                        </a>
+                    </div>
                     <div class="text-center mt-4 mb-3">
                      </div>
                     <div class="row sm-gutters">

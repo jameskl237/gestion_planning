@@ -22,6 +22,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'image',
+        'telephone',
+        'color',
+        'role_id',
+        'departement_id'
+
     ];
 
     /**
@@ -46,5 +52,20 @@ class User extends Authenticatable
     public function todos(): HasMany
     {
         return $this->hasMany(Todo::class);
+    }
+
+    public function taches()
+    {
+        return $this->belongsToMany(Todo::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class);
     }
 }

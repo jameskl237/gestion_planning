@@ -18,7 +18,12 @@ class TodoFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'description' => $this->faker->text()
+            'description' => $this->faker->text(),
+            'date_debut'=> $this->faker->date(),
+            'date_fin' => $this->faker->date(),
+            'heure_debut' => $this->faker->time(),
+            'heure_fin' => $this->faker->time(),
+
         ];
     }
 }
