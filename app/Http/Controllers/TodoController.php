@@ -42,7 +42,7 @@ class TodoController extends Controller
     {
         $user = auth()->user();
         $us = Todo_user::where('user_id', $user->id)
-                        ->where('is_view', 0)->get();
+                        ->where('is_view', '0')->get();
         $var = $us->pluck('todo_id');
         $table = Todo::whereIn('id', $var)
                        ->where('user_id', '!=', $user->id)->get();
@@ -53,7 +53,7 @@ class TodoController extends Controller
     {
 
         $task = Todo_user::where('todo_id',$id)->first();
-        $task->is_view = 1;
+        $task->is_view = '1';
         $task->save();
         return redirect()->back();
     }
