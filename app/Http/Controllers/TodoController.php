@@ -70,6 +70,9 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+     // s'ajouter une tache a soi meme
+
     public function store(Request $request)
     {
         try {
@@ -101,13 +104,15 @@ class TodoController extends Controller
                 $liaison->save();
 
                 toastr()->success('Successs', 'Operation reussie');
-                return redirect()->route('welcome');
+                return redirect()->route('welcome')->with('success');
             }
         } catch (\Exception $e) {
             toastr()->error('Operation reussie', "Une Erreur c'est produite");
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
     }
+
+    // affecter une tache a son personnel
 
     public function store_sub(Request $request)
     {
@@ -127,9 +132,6 @@ class TodoController extends Controller
                 'sub' => 'required|array|min:1', // Au moins une checkbox doit être cochée
             ]);
 
-            // Vérifiez si des utilisateurs ont été sélectionnés
-            // if ($request->has('sub') ) {
-
                 $selectedUserIds = $request->sub; // Obtenez les ID des utilisateurs sélectionnés
                 $selectedUsers = User::whereIn('id', $selectedUserIds)->get(); // Récupérez les utilisateurs sélectionnés
 
@@ -139,9 +141,9 @@ class TodoController extends Controller
                     $liaison->todo_id = $todo->id;
                     $liaison->save();
                 }
-            // }
 
-            return redirect()->route('programmer')->with('success', 'Todo successfully saved');
+            toastr()->success('succes','Tache affectee');
+            return redirect()->route('programmer');
         } catch (\Exception $e) {
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
@@ -163,6 +165,10 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
+
+
+    //modifier une tache
+
     public function edit(Request $request, $id)
     {
 
@@ -186,7 +192,8 @@ class TodoController extends Controller
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
     }
-    // createtodo
+
+
     public function update(Request $request, Todo $todo)
     {
         $todo->update($request->validated());

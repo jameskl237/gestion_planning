@@ -18,7 +18,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('inscription');
+        $role = Role::where('rang','!=','1')->get();
+        $departement = Departement::all();
+        return view('inscription', compact('role', 'departement'));
     }
 
     public function profil()
@@ -73,12 +75,14 @@ class UserController extends Controller
 
             // Récupérer l'ID du département en fonction du nom du département
             $dep = Departement::where('nom', $request->departement)->first();
-            if ($dep) {
-                $new_user->departement_id = $dep->id;
-            } else {
-                toastr()->error('erreur', "Le département spécifié n\'a pas été trouvé");
-                return redirect()->back()->with('message', 'Le département spécifié n\'a pas été trouvé');
-            }
+            $new_user->departement_id = $dep->id ? $dep->id :' ';
+
+            // if ($dep) {
+            //     $new_user->departement_id = $dep->id;
+            // } else {
+            //     toastr()->error('erreur', "Le département spécifié n\'a pas été trouvé");
+            //     return redirect()->back()->with('message', 'Le département spécifié n\'a pas été trouvé');
+            // }
 
             // Gérer l'upload de l'image
             if ($request->hasFile('image')) {
@@ -89,9 +93,11 @@ class UserController extends Controller
             }
 
             $new_user->save();
-            // toastr()->success('success',"Utilisateur enregistré avec succès");
-            return redirect()->route('auth.login')->with('success', 'Utilisateur enregistré avec succès');
+            // dd('1');
+            toastr()->success('success',"Utilisateur enregistré avec succès");
+            return redirect()->route('auth.login');
         } catch (\Exception $e) {
+            // dd('1');
             toastr()->error('erreur', "Une erreur s\'est produite ");
             return redirect()->back()->with('error', 'Une erreur s\'est produite : ' . $e->getMessage());
         }

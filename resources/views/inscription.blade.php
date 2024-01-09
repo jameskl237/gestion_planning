@@ -32,25 +32,29 @@
                                 <h4>Enregistrez-vous</h4>
                             </div>
                             <div class="card-body">
-                                <form method="POST" action="" class="needs-validation" novalidate enctype="multipart/form-data">
+                                <form method="POST" action="" class="needs-validation" novalidate
+                                    enctype="multipart/form-data">
                                     @csrf
                                     @method('POST')
 
                                     <div class="form-group">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Nom</label>
-                                            <input id="name" type="text" class="form-control" name="name" tabindex="1" required>
+                                            <input id="name" type="text" class="form-control" name="name"
+                                                tabindex="1" required>
                                             <div class="invalid-feedback">Veuillez remplir ce champ.</div>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="prenom" class="form-label">Prénom</label>
-                                            <input id="prenom" type="text" class="form-control" name="prenom" tabindex="2">
+                                            <input id="prenom" type="text" class="form-control" name="prenom"
+                                                tabindex="2">
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email</label>
-                                            <input id="email" type="email" class="form-control" name="email" tabindex="3" required autofocus value="{{ old('email') }}">
+                                            <input id="email" type="email" class="form-control" name="email"
+                                                tabindex="3" required autofocus value="{{ old('email') }}">
                                             <div class="invalid-feedback">Veuillez remplir ce champ.</div>
                                             @error('email')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -59,7 +63,8 @@
 
                                         <div class="mb-3">
                                             <label for="password" class="form-label">Mot de passe</label>
-                                            <input id="password" type="password" class="form-control" name="password" tabindex="4" required>
+                                            <input id="password" type="password" class="form-control" name="password"
+                                                tabindex="4" required>
                                             <div class="invalid-feedback">Veuillez remplir ce champ.</div>
                                             @error('password')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -68,18 +73,45 @@
 
                                         <div class="mb-3">
                                             <label for="telephone" class="form-label">Téléphone</label>
-                                            <input id="telephone" type="text" class="form-control" name="telephone" tabindex="5" required>
+                                            <input id="telephone" type="text" class="form-control" name="telephone"
+                                                tabindex="5" required>
                                         </div>
 
-                                        <div class="mb-3">
+                                        {{-- <div class="mb-3">
                                             <label for="role" class="form-label">Rôle</label>
-                                            <input id="role" type="text" class="form-control" name="role" tabindex="6" required>
+                                            <input id="role" type="text" class="form-control" name="role"
+                                                tabindex="6" required>
+                                        </div> --}}
+                                        <div class="form-group mb-3">
+                                            <label>Rôle</label>
+                                            <select class="form-control" name="role" required>
+                                                <option></option>
+                                                @foreach ($role as $r )
+
+                                                    <option>{{ $r->nom }}</option>
+
+                                                @endforeach
+                                            </select>
                                         </div>
 
-                                        <div class="mb-3">
-                                            <label for="departement" class="form-label">Département (Si oui, nom du département)</label>
-                                            <input id="departement" type="text" class="form-control" name="departement" tabindex="7">
+                                        <div class="form-group mb-3">
+                                            <label>Departement</label>
+                                            <select class="form-control" name="departement">
+                                                <option></option>
+                                                @foreach ($departement as $d )
+
+                                                    <option>{{ $d->nom }}</option>
+
+                                                @endforeach
+                                            </select>
                                         </div>
+
+                                        {{-- <div class="mb-3">
+                                            <label for="departement" class="form-label">Département (Si oui, nom du
+                                                département)</label>
+                                            <input id="departement" type="text" class="form-control"
+                                                name="departement" tabindex="7">
+                                        </div> --}}
 
                                         <div class="mb-3">
                                             <label for="image" class="form-label">Ajouter une photo</label>
@@ -87,7 +119,8 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="8">S'inscrire</button>
+                                            <button type="submit" class="btn btn-primary btn-lg btn-block"
+                                                tabindex="8">S'inscrire</button>
                                         </div>
                                     </div>
                                 </form>

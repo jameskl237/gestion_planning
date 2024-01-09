@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(DepartementSeeder::class);
 
-         \App\Models\User::factory(10)->has(
+         \App\Models\User::factory(20)->has(
             Todo::factory(3)
          )->create();
 

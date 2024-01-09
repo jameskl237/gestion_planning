@@ -18,13 +18,40 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'name'=> 'Donald',
-                'email' => 'tientcheudonald@gmail.com',
-                'prenom' => 'Donald Maurice',
+                'name'=> 'Messi',
+                'email' => 'messi@gmail.com',
+                'prenom' => 'Nguele',
                 'password' => Hash::make('ayobo'),
-                'image' => 'capture.PNG',
-                
+                'image' => 'old.jpg',
+                'telephone' => '636342510',
+                'color' => 'dark dark-sidebar theme-cyan',
+                'role_id' => 5,
+                'departement_id' => 6
 
+            ],
+
+            [
+                'name'=> 'Aminou',
+                'email' => 'aminou@gmail.com',
+                'prenom' => '',
+                'password' => Hash::make('ayobo'),
+                'image' => 'etu.PNG',
+                'telephone' => '636342510',
+                'color' => 'dark dark-sidebar theme-cyan',
+                'role_id' => 2,
+                'departement_id' => 6
+            ],
+
+            [
+                'name'=> 'Nkouandou',
+                'email' => 'aminou@gmail.com',
+                'prenom' => 'Aboubakar',
+                'password' => Hash::make('ayobo'),
+                'image' => 'etu.PNG',
+                'telephone' => '636342510',
+                'color' => 'dark dark-sidebar theme-cyan',
+                'role_id' => 5,
+                'departement_id' => 6
             ]
         ]);
     }

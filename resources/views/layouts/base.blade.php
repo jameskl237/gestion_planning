@@ -7,55 +7,22 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>TodoList</title>
+    <title>Planning</title>
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/bundles/datatables/datatables.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/bundles/prism/prism.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/bundles/prism/prism.css') }}">
 
     <!-- Custom style CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
     <link rel='shortcut icon' type='image/x-icon' href='{{ asset('assets/img/favicon.ico') }}' />
 </head>
-<script>
-    function choisir() {
 
-        var layout = document.getElementsByName('color1');
-        var sidebar = document.getElementsByName('color2');
-        var theme = document.getElementById('color_theme_id');
-
-        var choix = getRadioValue(sidebar);
-        var choice = getRadioValue(layout);
-        var cho = theme.value;
-        if (cho === '') {
-            cho = 'theme-white';
-        }
-
-        $.ajax({
-            url: 'api/color',
-            method: 'POST',
-            data: {
-                layout: choice,
-                sidebar: choix,
-                theme: cho,
-                user_id: '{{ Auth::user()->id }}'
-            },
-            success: function(response) {
-                console.log(response);
-                if (response == 'ok') {
-                    location.reload();
-                }
-            },
-            error: function(error) {
-                console.error(error);
-            }
-        });
-    }
-</script>
 
 <body class="{{ Auth::user()->color }}">
 
@@ -107,7 +74,8 @@
                     <li class="{{ Request::is('programmer') ? 'active' : '' }}"><a class="nav-link"
                             href="{{ route('programmer') }}"><i data-feather="home"></i><span>Programmer</span></a>
                     </li>
-                    <li><a class="{{ Request::is('programmation') ? 'active' : '' }}" href=""><i data-feather="list"></i><span>Liste personnelle</span></a>
+                    <li><a class="{{ Request::is('programmation') ? 'active' : '' }}" href=""><i
+                                data-feather="list"></i><span>Liste personnelle</span></a>
                     </li>
                     <li><a class="nav-link" href="{{ route('profil') }}"><i
                                 data-feather="user"></i><span>Profil</span></a></li>
@@ -123,6 +91,7 @@
                 </ul>
             </aside>
         </div>
+        
         <!-- Main Content -->
         <div class="main-content">
 
@@ -261,26 +230,6 @@
             </div>
         </footer>
     </div>
-    </div>
-    <script>
-        function getRadioValue(radios) {
-            for (var i = 0; i < radios.length; i++) {
-                if (radios[i].checked) {
-                    return radios[i].value;
-                }
-            }
-            // return 'light';
-        }
-
-        function getRadioVal(radios) {
-            for (var i = 0; i < radios.length; i++) {
-                if (radios[i].checked) {
-                    return radios[i].value;
-                }
-            }
-            // return 'light-sidebar';
-        }
-    </script>
     <!-- General JS Scripts -->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 
@@ -304,6 +253,59 @@
     <!-- Custom JS File -->
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     @stack('script_other')
+    <script>
+        function getRadioValue(radios) {
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    return radios[i].value;
+                }
+            }
+            // return 'light';
+        }
+
+        function getRadioVal(radios) {
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    return radios[i].value;
+                }
+            }
+            // return 'light-sidebar';
+        }
+
+        function choisir() {
+
+            var layout = document.getElementsByName('color1');
+            var sidebar = document.getElementsByName('color2');
+            var theme = document.getElementById('color_theme_id');
+
+            var choix = getRadioValue(sidebar);
+            var choice = getRadioValue(layout);
+            var cho = theme.value;
+            if (cho === '') {
+                cho = 'theme-white';
+            }
+
+            $.ajax({
+                url: 'api/color',
+                method: 'POST',
+                data: {
+                    layout: choice,
+                    sidebar: choix,
+                    theme: cho,
+                    user_id: '{{ Auth::user()->id }}'
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response == 'ok') {
+                        location.reload();
+                    }
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        }
+    </script>
 </body>
 
 
