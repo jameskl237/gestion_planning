@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>Planning</title>
+    <title>Planning_UYI</title>
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{{ asset('assets/css/app.min.css') }}">
     <!-- Template CSS -->
@@ -21,6 +21,8 @@
     <!-- Custom style CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
     <link rel='shortcut icon' type='image/x-icon' href='{{ asset('assets/img/favicon.ico') }}' />
+
+    @yield('style')
 </head>
 
 
@@ -77,9 +79,9 @@
                     <li><a class="{{ Request::is('programmation') ? 'active' : '' }}" href=""><i
                                 data-feather="list"></i><span>Liste personnelle</span></a>
                     </li>
-                    <li><a class="nav-link" href="{{ route('profil') }}"><i
+                    <li class="{{ Request::is('profil') ? 'active' : '' }}"><a class="nav-link" href="{{ route('profil') }}"><i
                                 data-feather="user"></i><span>Profil</span></a></li>
-                    <li><a class="nav-link" href=""><span></span></a></li>
+                    <li class="{{ Request::is('calendar') ? 'active' : '' }}"><a class="nav-link" href="{{ route('calendar') }}"><span><i data-feather="calendar"></i> Calendrier</span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
@@ -91,7 +93,7 @@
                 </ul>
             </aside>
         </div>
-        
+
         <!-- Main Content -->
         <div class="main-content">
 
@@ -222,14 +224,15 @@
                 </div>
             </div>
         </div>
-        <footer class="main-footer">
-            <div class="footer-left">
-                <a href="templateshub.net">Templateshub</a>
-            </div>
-            <div class="footer-right">
-            </div>
-        </footer>
+
     </div>
+    <footer class="main-footer">
+        <div class="footer-left">
+            <a href="templateshub.net">Planning_UYI</a>
+        </div>
+        <div class="footer-right">
+        </div>
+    </footer>
     <!-- General JS Scripts -->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
 

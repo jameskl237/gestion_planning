@@ -6,6 +6,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CalendarController;
+
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Routing\Route as RoutingRoute;
@@ -50,6 +52,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/')->controller(UserController::class)->group(function(){
         Route::get('/programmer', 'getPersonnel')->name('programmer');
         Route::get('/profil','profil')->name('profil');
+    });
+
+    Route::prefix('/')->controller(CalendarController::class)->group(function(){
+        Route::get('/calendar', 'calendar')->name('calendar');
     });
 });
 

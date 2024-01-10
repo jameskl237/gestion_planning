@@ -3,7 +3,7 @@
 @section('content')
     <section class="section">
         <div class="section-body">
-            <div class="card author-box card-primary pt-5">
+            <div class="card author-box card-primary ">
                 <div class="main-top m-5">
                     <section class="section">
                         <form action="{{ route('store_sub') }}" method="post">

@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\TodoController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +32,5 @@ Route::get('todo/{id}',[TodoController::class,'show']);
 Route::post('/color',[ColorController::class,'updateColor']);
 
 Route::post('/login',[AuthController::class, 'dologin_api']);
+
+Route::get('/calendar',[CalendarController::class,'index'])->name('calendar');
