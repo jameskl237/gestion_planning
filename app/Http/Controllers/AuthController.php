@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\authRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Stmt\TryCatch;
 
 class AuthController extends Controller
 {
@@ -15,16 +16,20 @@ class AuthController extends Controller
 
     public function dologin(authRequest $request)
     {
-        $credentials = $request->validated();
-        // dd(Auth::attempt($credentials));
+        try {
+            $credentials = $request->validated();
+            if( Auth::attempt($credentials)){
+                session()->regenerate();
+                toastr()->success('Success','Connexion reussie');
+                return redirect()->route('welcome');
+            }
+            toastr()->error('erreur', "une erreur s'est produite");
+            return to_route('auth.login')->withErrors('email=>invalid')->onlyInput('email');
 
-        if( Auth::attempt($credentials)){
-            session()->regenerate();
-            toastr()->success('Success','Connexion reussie');
-            return redirect()->route('welcome');
+        }catch (\Exception $e) {
+            toastr()->error('Operation reussie', "Une Erreur c'est produite");
+            return back()->with('error'. $e->getMessage());
         }
-        toastr()->error('erreur', "une erreur s'est produite");
-        return to_route('auth.login')->withErrors('email=>invalid')->onlyInput('email');
     }
 
 
@@ -51,6 +56,13 @@ class AuthController extends Controller
                 'message' => 'Connexion echoue'
             ], 401);
         }
+    }
+
+
+    public function navbar_user()
+    {
+        $user = auth()->user();
+        return view('layouts.base', compact('user'));
     }
 
 

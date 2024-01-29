@@ -20,13 +20,31 @@ class Todo extends Model
         'user_id',
     ];
 
-    public function users(): BelongsTo
+    // lien avec le model User dans le cadre de l'utilisateur qui cree une tache
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    // lien avec le model User dans le cadre des taches affectees a un ou plusieurs personel
+
     public function taches()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    // lien avec le model Planning 
+
+    public function Planning()
+    {
+        return $this->belongsToMany(Planning::class);
+    }
+
+    // lien avec le model Salle 
+
+    public function salle()
+    {
+        return $this->belongsToMany(Salle::class);
     }
 }

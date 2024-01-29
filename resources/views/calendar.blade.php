@@ -53,10 +53,17 @@
                         title: "{{ $ca->name }}",
                         start: new Date("{{ $ca->date_debut }}T{{ $ca->heure_debut }}:00"),
                         end: new Date("{{ $ca->date_fin }} {{ $ca->heure_fin }}"),
-                        backgroundColor: "blue"
+                        backgroundColor: "blue",
+                        url: '{{ route('welcome')}}',
                     },
                 @endforeach
             ],
+            eventClick: function(event) {
+                if (event.url) {
+                    window.open(event.url);
+                    return false;
+                }
+            },
         });
     </script>
 @endpush

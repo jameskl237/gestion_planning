@@ -38,25 +38,31 @@ class TodoController extends Controller
         return view('todocreate');
     }
 
+    // Foction qui gere les notifications
+
     public function notification()
     {
         $user = auth()->user();
         $us = Todo_user::where('user_id', $user->id)
-                        ->where('is_view', '0')->get();
+            ->where('is_view', '0')->get();
         $var = $us->pluck('todo_id');
         $table = Todo::whereIn('id', $var)
-                       ->where('user_id', '!=', $user->id)->get();
-        return view('newtasks', compact('table'));
+            ->where('user_id', '!=', $user->id)->get();
+        return view('layouts.base', compact('table'));
     }
+
+    // Fonction pour gerer les notifications  vues
 
     public function is_view($id)
     {
 
-        $task = Todo_user::where('todo_id',$id)->first();
+        $task = Todo_user::where('todo_id', $id)->first();
         $task->is_view = '1';
         $task->save();
         return redirect()->back();
     }
+
+    // Fonction de redirection pour programmer le personnel
 
     public function programmer()
     {
@@ -71,7 +77,7 @@ class TodoController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     // s'ajouter une tache a soi meme
+    // s'ajouter une tache a soi meme
 
     public function store(Request $request)
     {
@@ -95,6 +101,7 @@ class TodoController extends Controller
                 $todo->date_fin = $request->date_fin;
                 $todo->heure_debut = $request->heure_debut;
                 $todo->heure_fin = $request->heure_fin;
+                $todo->jour = '';
                 $todo->user_id = $user->id;
                 $todo->save();
 
@@ -125,6 +132,7 @@ class TodoController extends Controller
             $todo->date_fin = $request->date_fin;
             $todo->heure_debut = $request->heure_debut;
             $todo->heure_fin = $request->heure_fin;
+            $todo->jour = '';
             $todo->user_id = $user->id;
             $todo->save();
 
@@ -132,17 +140,17 @@ class TodoController extends Controller
                 'sub' => 'required|array|min:1', // Au moins une checkbox doit être cochée
             ]);
 
-                $selectedUserIds = $request->sub; // Obtenez les ID des utilisateurs sélectionnés
-                $selectedUsers = User::whereIn('id', $selectedUserIds)->get(); // Récupérez les utilisateurs sélectionnés
+            $selectedUserIds = $request->sub; // Obtenez les ID des utilisateurs sélectionnés
+            $selectedUsers = User::whereIn('id', $selectedUserIds)->get(); // Récupérez les utilisateurs sélectionnés
 
-                foreach ($selectedUsers as $users) {
-                    $liaison = new Todo_user();
-                    $liaison->user_id = $users->id;
-                    $liaison->todo_id = $todo->id;
-                    $liaison->save();
-                }
+            foreach ($selectedUsers as $users) {
+                $liaison = new Todo_user();
+                $liaison->user_id = $users->id;
+                $liaison->todo_id = $todo->id;
+                $liaison->save();
+            }
 
-            toastr()->success('succes','Tache affectee');
+            toastr()->success('succes', 'Tache affectee');
             return redirect()->route('programmer');
         } catch (\Exception $e) {
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
@@ -182,6 +190,7 @@ class TodoController extends Controller
             $todo->date_fin = $request->date_fin;
             $todo->heure_debut = $request->heure_debut;
             $todo->heure_fin = $request->heure_fin;
+            $todo->jour = '';
             $todo->user_id = $user->id;
             $todo->save();
 

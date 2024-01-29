@@ -112,7 +112,101 @@ class RoleSeeder extends Seeder
                 'rang' => 2
             ],
 
-            
+            [
+                'nom' => 'SD',
+                'libelle' => 'Secretaire du decanat',
+                'rang' => 3
+            ],
+
+            [
+                'nom' => 'GSSE',
+                'libelle' => 'Gerant du service des stages et de l\'emploi',
+                'rang' => 3
+            ],
+
+            [
+                'nom' => 'GSF',
+                'libelle' => 'Gerant du service de la formation',
+                'rang' => 3
+            ],
+
+            [
+                'nom' => 'GSAGP',
+                'libelle' => 'Gerant du service des Affaires Générales et de la Planification',
+                'rang' => 2
+            ],
+
+            [
+                'nom' => 'GSMM',
+                'libelle' => 'Gerant du service de la Mobilité et des Missions',
+                'rang' => 3
+            ],
+
+            [
+                'nom' => 'GBAIO',
+                'libelle' => 'Gerant du Bureau d\'Appui à l\'Insertion et à l\'Orientation ',
+                'rang' => 4
+            ],
+
+            [
+                'nom' => 'GBITS',
+                'libelle' => 'Gerant du Bureau des Technologies de l\'Information et des Systèmes ',
+                'rang' => 4
+            ],
+
+            [
+                'nom' => 'GBUDG',
+                'libelle' => 'Gerant du Bureau du Budget ',
+                'rang' => 4
+            ],
+
+            [
+                'nom' => 'GBCRCM',
+                'libelle' => 'Gerant du Bureau de la Coopération, des Relations Extérieures et de la Communication',
+                'rang' => 4
+            ],
+
+            [
+                'nom' => 'GBPE',
+                'libelle' => 'Gerant du Bureau de la Pédagogie et de l\'Enseignement ',
+                'rang' => 4
+            ],
+
+            [
+                'nom' => 'GBPN',
+                'libelle' => 'Gerant du Bureau de la Planification et de la Normalisation ',
+                'rang' => 4
+            ],
+
+            [
+                'nom' => 'GBACAEPS',
+                'libelle' => 'Gerant du Bureau d\'Assistance et de Contrôle des Activités des Enseignants et des Personnels de Soutien',
+                'rang' => 4
+            ],
+
+            [
+                'nom' => 'GBCOURRIER',
+                'libelle' => 'Gerant du Bureau du Courrier ',
+                'rang' => 3
+            ],
+
+            [
+                'nom' => 'GBTRADUCTION',
+                'libelle' => 'Gerant du Bureau de la Traduction ',
+                'rang' => 3
+            ],
+
+            [
+                'nom' => 'GARCHIVES',
+                'libelle' => 'Gerant du Service des Archives ',
+                'rang' => 3
+            ],
+
+            [
+                'nom' => 'GSPPE',
+                'libelle' => 'Gerant du Service de la Pédagogie, de la Planification et des Examens',
+                'rang' => 2
+            ],
 
 
         ]);

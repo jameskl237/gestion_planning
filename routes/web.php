@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\PlanningController;
+use Dompdf\Dompdf;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
 
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Request as HttpRequest;
@@ -24,20 +28,20 @@ use Symfony\Component\Routing\Annotation\Route as AnnotationRoute;
 |
 */
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
-Route::post('/login',[AuthController::class,'dologin']);
-Route::get('/inscrire',[UserController::class,'index'])->name('inscrire');
-Route::post('/inscrire',[UserController::class,'store'])->name('new');
+Route::post('/login', [AuthController::class, 'dologin']);
+Route::get('/inscrire', [UserController::class, 'index'])->name('inscrire');
+Route::post('/inscrire', [UserController::class, 'store'])->name('new');
 Route::middleware('auth')->group(function () {
 
 
-    Route::resource('todo',TodoController::class);
+    Route::resource('todo', TodoController::class);
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::prefix('/')->controller(TodoController::class)->group(function(){
+    Route::prefix('/')->controller(TodoController::class)->group(function () {
         Route::get('/', 'index')->name('welcome');
         Route::get('/{todo}/info', 'info')->name('info');
         Route::delete('/destroy/{id}', 'destroy_web')->name('destroy');
@@ -49,14 +53,44 @@ Route::middleware('auth')->group(function () {
         Route::post('/is_view/{id}', 'is_view')->name('is_view');
     });
 
-    Route::prefix('/')->controller(UserController::class)->group(function(){
+    Route::prefix('/')->controller(UserController::class)->group(function () {
         Route::get('/programmer', 'getPersonnel')->name('programmer');
-        Route::get('/profil','profil')->name('profil');
+        Route::get('/profil', 'profil')->name('profil');
     });
 
-    Route::prefix('/')->controller(CalendarController::class)->group(function(){
+    Route::prefix('/')->controller(CalendarController::class)->group(function () {
         Route::get('/calendar', 'calendar')->name('calendar');
+        Route::get('/plannings', 'index')->name('plannings');
     });
+
+    Route::prefix('/')->controller(PlanningController::class)->group(function () {
+        Route::get('/plannings', 'index')->name('plannings');
+        Route::get('/affichage/{id}', 'affiche')->name('affiche_planning');
+        Route::post('/ajout/{id}','store_tache')->name('ajout');
+        Route::post('/store', 'store')->name('store_planning');
+    });
+
+    // Route::get('/generate-pdf', function () {
+    //     $dompdf = new Dompdf();
+    //     $html = View::make('affiche_planning')->renderSections()['content'];
+    //     $dompdf->loadHtml($html);
+    //     $dompdf->render();
+
+    //     // Spécifiez le chemin complet du répertoire de stockage
+    //     $directory = storage_path('app/public/');
+
+    //     // Vérifiez si le répertoire existe, sinon, créez-le
+    //     if (!file_exists($directory)) {
+    //         mkdir($directory, 0777, true);
+    //     }
+
+    //     // Utilisez la classe Storage pour stocker le fichier PDF
+    //     $filename = 'calendrier.pdf';
+    //     $file = $directory . '/' . $filename;
+    //     file_put_contents($file, $dompdf->output());
+
+    //     // Utilisez Storage::url pour obtenir l'URL du fichier stocké
+    //     $url = Storage::url('pdfs/' . $filename);
+    //     return redirect('/affichage');
+    // });
 });
-
-

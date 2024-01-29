@@ -23,7 +23,7 @@ class TodoFactory extends Factory
             'date_fin' => $this->faker->date(),
             'heure_debut' => $this->faker->time(),
             'heure_fin' => $this->faker->time(),
-
+            'jour' => ''
         ];
     }
 }

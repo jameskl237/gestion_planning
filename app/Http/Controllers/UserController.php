@@ -75,7 +75,7 @@ class UserController extends Controller
 
             // Récupérer l'ID du département en fonction du nom du département
             $dep = Departement::where('nom', $request->departement)->first();
-            $new_user->departement_id = $dep->id ? $dep->id :' ';
+            $new_user->departement_id = $dep->id ? $dep->id :'';
 
             // if ($dep) {
             //     $new_user->departement_id = $dep->id;
@@ -153,10 +153,13 @@ class UserController extends Controller
     {
 
         $user = auth()->user();
-        $tab = User::where('role_id', '>', $user->role_id)
+        if($user->deparetement_id == 'NULL'){
+            $tab = User::where('role_id', '>', $user->role_id)->get();
+        }else {
+            $tab = User::where('role_id', '>', $user->role_id)
             ->where('departement_id', '=', $user->departement_id)
             ->get();
-        // $role = Role::where('id',$tab->id)->first();
+        }
         return view('programmer_personnel', compact('tab'));
     }
 }

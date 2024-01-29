@@ -1,14 +1,14 @@
 @extends('layouts.base')
 
 @section('search_bar')
-    <form class="form-inline mr-auto">
+    {{-- <form class="form-inline mr-auto">
         <div class="search-element">
             <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="200">
             <button class="btn" type="submit">
                 <i class="fas fa-search"></i>
             </button>
         </div>
-    </form>
+    </form> --}}
 @endsection
 
 
@@ -68,7 +68,7 @@
                                         <tbody>
                                             @foreach ($arr as $val)
                                                 <tr role="row" class="odd">
-                                                    <td class="sorting_1">{{ $val->name }}</td>
+                                                    <td class="sorting_1"><a href="{{ route('calendar') }}">{{ $val->name }}</a></td>
                                                     <td>{{ $val->description }}</td>
                                                     <td>{{ $val->heure_debut }}</td>
                                                     <td>{{ $val->heure_fin }}</td>
@@ -178,6 +178,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            @foreach ($arr as $val )
+
             <div class="modal-body" id="modifModalBody">
                 <form action="{{ route('tache_update', $val->id) }}" method="post">
                     @csrf
@@ -216,10 +218,7 @@
                     <button type="submit" class="btn btn-primary m-t-15 waves-effect">Enregistrer</button>
                 </form>
             </div>
-
-            {{-- <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('message._user_profile_close_') }}</button>
-            </div> --}}
+            @endforeach
         </div>
     </div>
 </div>

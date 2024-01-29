@@ -49,23 +49,38 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    // lien avec le model Todo dans le cadre de l'utilisateur qui cree une tache
+
     public function todos(): HasMany
     {
         return $this->hasMany(Todo::class);
     }
+
+    // lien avec le model Todo dans le cadre des taches affectees a un ou plusieurs personel
 
     public function taches()
     {
         return $this->belongsToMany(Todo::class);
     }
 
+    // lien avec le model role 
+
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
+    // lien avec le model departement
+
     public function departement()
     {
         return $this->belongsTo(Departement::class);
+    }
+
+    // lien avec le model Planning
+
+    public function planings(): HasMany
+    {
+        return $this->hasMany(Planning::class);
     }
 }

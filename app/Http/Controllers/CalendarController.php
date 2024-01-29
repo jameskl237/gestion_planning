@@ -9,6 +9,9 @@ use App\Models\Todo_user;
 
 class CalendarController extends Controller
 {
+
+    // Fonction qui recupere les taches et les passe au calendrier
+
     public function calendar()
     {
         $user = auth()->user();
@@ -17,6 +20,8 @@ class CalendarController extends Controller
         $arr = Todo::whereIn('id', $var)->get();
         return view('calendar', compact('arr'));
     }
+
+    // Fonction qui permet de traiter les taches du calendrier et les passer a travers une route
 
     public function index()
     {
@@ -39,4 +44,8 @@ class CalendarController extends Controller
 
         return response()->json($events);
     }
+
+
 }
+
+

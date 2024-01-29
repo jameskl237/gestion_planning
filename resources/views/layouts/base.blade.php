@@ -50,15 +50,106 @@
                     </ul>
                 </div>
                 <div class="navbar-nav ms-auto mb-2 mb-lg-0">
-
+                    <ul class="navbar-nav navbar-right">
+                        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                                class="nav-link nav-link-lg message-toggle" aria-expanded="false"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-mail">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                    </path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                                <span class="badge headerBadge1">
+                                    6 </span> </a>
+                            <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
+                                <div class="dropdown-header">
+                                    Messages
+                                    <div class="float-right">
+                                        <a href="#">Mark All As Read</a>
+                                    </div>
+                                </div>
+                                <div class="dropdown-list-content dropdown-list-message" tabindex="4"
+                                    style="overflow: hidden; outline: none;">
+                                    <a href="#" class="dropdown-item"> <span
+                                            class="dropdown-item-avatar text-white">
+                                            <img alt="image" src="assets/img/users/user-2.png"
+                                                class="rounded-circle">
+                                        </span> <span class="dropdown-item-desc"> <span class="message-user">Sarah
+                                                Smith</span> <span class="time messege-text">Request for leave
+                                                application</span>
+                                            <span class="time">5 Min Ago</span>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="dropdown-footer text-center">
+                                    <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                                </div>
+                                <div id="ascrail2003" class="nicescroll-rails nicescroll-rails-vr"
+                                    style="width: 9px; z-index: 1000; cursor: default; position: absolute; top: 7.58738px; left: 291px; height: 250px; opacity: 0.3; display: none;">
+                                    <div class="nicescroll-cursors"
+                                        style="position: relative; top: 0px; float: right; width: 7px; height: 138px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px;">
+                                    </div>
+                                </div>
+                                <div id="ascrail2003-hr" class="nicescroll-rails nicescroll-rails-hr"
+                                    style="height: 9px; z-index: 1000; top: 248.587px; left: 0px; position: absolute; cursor: default; display: none; width: 291px; opacity: 0.3;">
+                                    <div class="nicescroll-cursors"
+                                        style="position: absolute; top: 0px; height: 7px; width: 300px; background-color: rgb(66, 66, 66); border: 1px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 5px; left: 0px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                                class="nav-link notification-toggle nav-link-lg" aria-expanded="false"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-bell bell">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                            </a>
+                            <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
+                                <div class="dropdown-header">
+                                    Notifications
+                                    <div class="float-right">
+                                        <a href="#">Mark All As Read</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        @php
+                            if (Auth::user()) {
+                                $im = Auth::user()->image;
+                            }else{
+                                $im = 'public\template\assets\img\banner\1.png';
+                            }
+                        @endphp
+                        <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image" src="{{ $im }}" class="user-img-radious-style"> <span class="d-sm-none d-lg-inline-block"></span></a>
+                            <div class="dropdown-menu dropdown-menu-right pullDown">
+                              <div class="dropdown-title">{{ Auth::user()->name }}</div>
+                              <a href="profile.html" class="dropdown-item has-icon"> <i class="far
+                                                        fa-user"></i> Profile
+                              </a> <a href="timeline.html" class="dropdown-item has-icon"> <i class="fas fa-bolt"></i>
+                                Activities
+                              </a> <a href="#" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
+                                Settings
+                              </a>
+                              <div class="dropdown-divider"></div>
+                              <a href="{{ route('logout') }}" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                              </a>
+                            </div>
+                          </li>
                 </div>
             </nav>
         </div>
         <div class="main-sidebar sidebar-style-2">
             <aside id="sidebar-wrapper">
                 <div class="sidebar-brand">
-                    <a href="{{ route('welcome') }}"> <img alt="image" src="{{ asset('assets/img/banner/1.png') }}"
-                            class="header-logo" /> <span class="logo-name">Plannings</span>
+                    <a href="{{ route('welcome') }}"> <img alt="image"
+                            src="{{ asset('assets/img/banner/1.png') }}" class="header-logo" /> <span
+                            class="logo-name">Plannings</span>
                     </a>
                 </div>
                 <ul class="sidebar-menu">
@@ -70,6 +161,12 @@
                             <span> Liste des Taches</span>
                         </a>
                     </li>
+                    <li class="{{ Request::is('plannings') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('plannings') }}" class="nav-link">
+                            <i data-feather="book"></i>
+                            <span>Planifier</span>
+                        </a>
+                    </li>
                     <li class="{{ Request::is('notification') ? 'active' : '' }}"><a class="nav-link"
                             href="{{ route('notif') }}"><i data-feather="plus"></i><span>Notifications</span></a>
                     </li>
@@ -79,17 +176,16 @@
                     <li><a class="{{ Request::is('programmation') ? 'active' : '' }}" href=""><i
                                 data-feather="list"></i><span>Liste personnelle</span></a>
                     </li>
-                    <li class="{{ Request::is('profil') ? 'active' : '' }}"><a class="nav-link" href="{{ route('profil') }}"><i
-                                data-feather="user"></i><span>Profil</span></a></li>
-                    <li class="{{ Request::is('calendar') ? 'active' : '' }}"><a class="nav-link" href="{{ route('calendar') }}"><span><i data-feather="calendar"></i> Calendrier</span></a></li>
+                    <li class="{{ Request::is('profil') ? 'active' : '' }}"><a class="nav-link"
+                            href="{{ route('profil') }}"><i data-feather="user"></i><span>Profil</span></a></li>
+                    <li class="{{ Request::is('calendar') ? 'active' : '' }}"><a class="nav-link"
+                            href="{{ route('calendar') }}"><span><i data-feather="calendar"></i>
+                                Calendrier</span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
-
-                    <li><a class="nav-link" href="{{ route('logout') }}"><i
-                                data-feather="log-out"></i><span>Logout</span></a></li>
                 </ul>
             </aside>
         </div>
@@ -247,6 +343,8 @@
     <script src="{{ asset('assets/bundles/datatables/export-tables/jszip.min.js') }}"></script>
     <script src="{{ asset('assets/bundles/datatables/export-tables/pdfmake.min.js') }}"></script>
     <script src="{{ asset('assets/bundles/datatables/export-tables/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('assets/bundles/editable-table/mindmup-editabletable.js') }}"></script>
+    <script src="{{ asset('assets/js/page/editable-table.js') }}"></script>
     <script src="{{ asset('assets/bundles/datatables/export-tables/buttons.print.min.js') }}"></script>
     <script src="{{ asset('assets/js/page/datatables.js') }}"></script>
     <script src="{{ asset('assets/bundles/sweetalert/sweetalert.min.js') }}"></script>

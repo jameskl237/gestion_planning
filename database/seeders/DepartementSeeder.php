@@ -26,7 +26,13 @@ class DepartementSeeder extends Seeder
             ['nom' => 'Mathematique'],
             ['nom' => 'Microbiologie'],
             ['nom' => 'Physique'],
-            ['nom' => 'Science de la terre']
+            ['nom' => 'Science de la terre'],
+            ['nom' =>'DPSAA'],
+            ['nom' =>'DRC'],
+            ['nom' =>'DSSE'],
+            ['nom' =>'DAF'],
+            ['nom' =>'DAARS'],
+            ['nom' =>'NULL'],
         ]);
     }
 }

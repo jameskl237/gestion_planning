@@ -19,12 +19,16 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleSeeder::class);
         $this->call(DepartementSeeder::class);
+        $this->call(SalleSeeder::class);
 
-         \App\Models\User::factory(20)->has(
+
+        \App\Models\User::factory(20)->has(
             Todo::factory(3)
-         )->create();
+        )->create();
 
+        $this->call(PlanningSeeder::class);
         $this->call(Todo_userSeeder::class);
-
+        $this->call(Todo_planningSeeder::class);
+        $this->call(Todo_salleSeeder::class);
     }
 }
