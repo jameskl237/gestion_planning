@@ -25,7 +25,8 @@ class UserController extends Controller
 
     public function profil()
     {
-        return view('profil');
+        $user= auth()->user();
+        return view('profil',compact('user'));
     }
     /**
      * Show the form for creating a new resource.

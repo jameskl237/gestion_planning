@@ -34,17 +34,22 @@ class Todo extends Model
         return $this->belongsToMany(User::class);
     }
 
-    // lien avec le model Planning 
+    // lien avec le model Planning
 
     public function Planning()
     {
         return $this->belongsToMany(Planning::class);
     }
 
-    // lien avec le model Salle 
+    // lien avec le model Salle
 
     public function salle()
     {
         return $this->belongsToMany(Salle::class);
+    }
+
+    public function salles()
+    {
+        return $this->belongsToMany(Salle::class, 'todo_salles', 'todo_id', 'salle_id');
     }
 }

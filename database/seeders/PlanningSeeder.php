@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelcourss;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -19,60 +19,70 @@ class PlanningSeeder extends Seeder
             [
                 'name' => 'ICT',
                 'description' => 'programme cc semestre 1',
+                'type' => 'cours',
                 'user_id' => 5
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'programme des cours semestre 1',
+                'type' => 'cours',
                 'user_id' => 5
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'programme des cours semestre 2',
+                'type' => 'cours',
                 'user_id' => 2
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'programme sn semestre 1',
+                'type' => 'cours',
                 'user_id' => 2
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'programme sn semestre 2',
+                'type' => 'cours',
                 'user_id' => 3
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'programme cc semestre 2',
+                'type' => 'cours',
                 'user_id' => 3
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'Reunion professeurs',
+                'type' => 'cours',
                 'user_id' => 2
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'programme Travaux diriges semestre 1',
+                'type' => 'cours',
                 'user_id' => 2
             ],
 
             [
                 'name' => 'ICT',
                 'description' => 'programme Travaux diriges semestre 2',
+                'type' => 'cours',
                 'user_id' => 5
             ],
 
             [
                 'name' => 'Informatique',
                 'description' => 'programme Travaux diriges semestre 1',
+                'type' => 'cours',
                 'user_id' => 2
             ],
 

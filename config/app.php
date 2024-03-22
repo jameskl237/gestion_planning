@@ -176,7 +176,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        // toastr
         Yoeunes\Toastr\ToastrServiceProvider::class,
+	    // Service Provider DomPDF
+	    Barryvdh\DomPDF\ServiceProvider::class
 
     ],
 
@@ -194,6 +197,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Toastr' => Yoeunes\Toastr\Facades\Toastr::class,
+	    // Façade Laravel-dompdf
+	    // "PDF" => Barryvdh\DomPDF\Facade::class
     ])->toArray(),
 
 ];

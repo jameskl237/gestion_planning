@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('/')->controller(CalendarController::class)->group(function () {
         Route::get('/calendar', 'calendar')->name('calendar');
-        Route::get('/plannings', 'index')->name('plannings');
+        // Route::get('/plannings', 'index')->name('plannings');
     });
 
     Route::prefix('/')->controller(PlanningController::class)->group(function () {
@@ -68,6 +68,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/affichage/{id}', 'affiche')->name('affiche_planning');
         Route::post('/ajout/{id}','store_tache')->name('ajout');
         Route::post('/store', 'store')->name('store_planning');
+        Route::post('/store_evaluation', 'store_eval')->name('store_eval');
+        Route::post('/pdf{id}', 'getPDF')->name('pdf');
+        Route::get('/planning_evaluation', 'plannings_eval')->name('eval');
+        Route::get('/affiche_eval/{id}', 'affiche_eval')->name('affiche_eval');
+        Route::post('/ajout_evaluation/{id}', 'store_tache_eval')->name('store_tache_eval');
+
     });
 
     // Route::get('/generate-pdf', function () {
@@ -75,6 +81,7 @@ Route::middleware('auth')->group(function () {
     //     $html = View::make('affiche_planning')->renderSections()['content'];
     //     $dompdf->loadHtml($html);
     //     $dompdf->render();
+
 
     //     // Spécifiez le chemin complet du répertoire de stockage
     //     $directory = storage_path('app/public/');

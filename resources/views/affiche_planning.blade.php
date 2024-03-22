@@ -14,26 +14,6 @@
 
 
 @section('content')
-    {{-- <section class="section">
-        <div class="section-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Planning</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="fc-overflow">
-                                <div id="myEvent"></div>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> --}}
     <section class="section">
         <div class="section-body">
             <div class="row">
@@ -41,6 +21,9 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
                             <h4>Listes des taches</h4>
+                            {{-- <form method="get" action="{{ route('pdf', $id) }}"> --}}
+                            <button type="button" class="btn btn-primary" id="generatePdf">Générer PDF</button>
+                            {{-- </form> --}}
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                                 Ajoutez une nouvelle tache
                             </button>
@@ -56,7 +39,9 @@
                                                 <th class="sorting_asc" tabindex="0" aria-controls="tableExport"
                                                     rowspan="1" colspan="1" aria-sort="ascending"
                                                     aria-label="Name: activate to sort column descending"
-                                                    style="width: 89px;">Heure</th>
+                                                    style="width: 89px;">Heure
+
+                                                </th>
                                                 <th class="sorting" tabindex="0" aria-controls="tableExport"
                                                     rowspan="1" colspan="1"
                                                     aria-label="Position: activate to sort column ascending"
@@ -89,61 +74,35 @@
 
                                         </thead>
                                         <tbody>
-                                            {{-- <tr>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                                <td tabindex="1"><input type="text" class="form-control"></td>
-                                            </tr>
-                                            <tr>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                                <td tabindex="2"><input type="text" class="form-control"></td>
-                                            </tr>
-                                            <tr>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                                <td tabindex="3"><input type="text" class="form-control"></td>
-                                            </tr>
-                                            <tr>
-                                                <td tabindex="4"><input type="text" style="height: 100px" class="form-control"></td>
-                                                <td tabindex="4"><input type="text" class="form-control"></td>
-                                                <td tabindex="4"><input type="text" class="form-control"></td>
-                                                <td tabindex="4"><input type="text" class="form-control"></td>
-                                                <td tabindex="4"><input type="text" class="form-control"></td>
-                                                <td tabindex="4"><input type="text" class="form-control"></td>
-                                                <td tabindex="4"><input type="text" class="form-control"></td>
-                                                <td tabindex="4"><input type="text" class="form-control"></td> --}}
-                                            </tr>
-
                                             @foreach ($task as $t)
                                                 {{-- @foreach ($sal as $s) --}}
                                                 <tr>
                                                     @php
                                                         $sa = App\Models\Todo_salle::where('todo_id', $t->id)->get();
                                                         $saa = $sa->pluck('salle_id');
-                                                        $s = App\Models\Salle::where('id', $saa)->first();
+                                                        $s = App\Models\Salle::whereIn('id', $saa)->first();
                                                     @endphp
                                                     @switch($t->jour)
                                                         @case('Lundi')
-                                                            <td tabindex="5">{{ $t->heure_debut }} - {{ $t->heure_debut }}
+                                                            <td class="d-flex align-items" tabindex="5">{{ $t->heure_debut }} -
+                                                                {{ $t->heure_fin }}
+
+                                                                <!-- Bouton pour appeler le modal de modification -->
+                                                                <a class="btn btn-primary btn-action mr-1" onclick="edit_tache($t-id);"
+                                                                    title="Modifier">
+                                                                    <i class="fas fa-pencil-alt"></i>
+                                                                </a>
+
+                                                                <!-- Bouton pour effectuer la suppression -->
+                                                                <a class="btn btn-danger btn-action" title="Supprimer"
+                                                                    onclick="delete_tache($t-id);">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
                                                             </td>
                                                             <td tabindex="5">{{ $t->name }} <br> {{ $t->description }} <br>
-                                                                salle: {{ $s->name }}</td>
+                                                                salle: {{ $s->name }}
+
+                                                            </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
@@ -153,11 +112,25 @@
                                                         @break
 
                                                         @case('Mardi')
-                                                            <td tabindex="6">{{ $t->heure_debut }} - {{ $t->heure_debut }}
-                                                            </td>
+                                                        <td class="d-flex align-items" tabindex="6">
+                                                            {{ $t->heure_debut }} - {{ $t->heure_fin }}
+                                                            <div class="d-flex">
+                                                                <!-- Bouton pour appeler le modal de modification -->
+                                                                <a class="btn btn-primary btn-action mr-1" onclick="edit_tache($t-id);" title="Modifier">
+                                                                    <i class="fas fa-pencil-alt"></i>
+                                                                </a>
+
+                                                                <!-- Bouton pour effectuer la suppression -->
+                                                                <a class="btn btn-danger btn-action" title="Supprimer" onclick="delete_tache($t-id);">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
+                                                            </div>
+                                                        </td>
                                                             <td tabindex="6"></td>
-                                                            <td tabindex="6">{{ $t->name }} <br> {{ $t->description }} <br>
-                                                                salle: {{ $s->name }}</td>
+                                                            <td tabindex="6">{{ $t->name }} <br> {{ $t->description }}
+                                                                <br>
+                                                                salle: {{ $s->name }}
+                                                            </td>
                                                             <td tabindex="6"></td>
                                                             <td tabindex="6"></td>
                                                             <td tabindex="6"></td>
@@ -166,12 +139,24 @@
                                                         @break
 
                                                         @case('Mercredi')
-                                                            <td tabindex="5">{{ $t->heure_debut }} - {{ $t->heure_debut }}
+                                                            <td class="d-flex align-items">{{ $t->heure_debut }} - {{ $t->heure_fin }}
+                                                                <!-- Bouton pour appeler le modal de modification -->
+                                                                <a class="btn btn-primary btn-action mr-1" onclick="edit_tache($t-id);"
+                                                                    title="Modifier">
+                                                                    <i class="fas fa-pencil-alt"></i>
+                                                                </a>
+
+                                                                <!-- Bouton pour effectuer la suppression -->
+                                                                <a class="btn btn-danger btn-action" title="Supprimer"
+                                                                    onclick="delete_tache($t-id);">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
                                                             </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5">{{ $t->name }} <br> {{ $t->description }}
-                                                                <br> salle: {{ $s->name }}</td>
+                                                                <br> salle: {{ $s->name }}
+                                                            </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
@@ -179,33 +164,68 @@
                                                         @break
 
                                                         @case('Jeudi')
-                                                            <td tabindex="5">{{ $t->heure_debut }} - {{ $t->heure_debut }}
+                                                            <td class="d-flex align-items">{{ $t->heure_debut }} - {{ $t->heure_fin }}
+                                                                <!-- Bouton pour appeler le modal de modification -->
+                                                                <a class="btn btn-primary btn-action mr-1" onclick="edit_tache($t-id);"
+                                                                    title="Modifier">
+                                                                    <i class="fas fa-pencil-alt"></i>
+                                                                </a>
+
+                                                                <!-- Bouton pour effectuer la suppression -->
+                                                                <a class="btn btn-danger btn-action" title="Supprimer"
+                                                                    onclick="delete_tache($t-id);">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
                                                             </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5">{{ $t->name }} <br> {{ $t->description }}
-                                                                <br> salle: {{ $s->name }}</td>
+                                                                <br> salle: {{ $s->name }}
+                                                            </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                         @break
 
                                                         @case('Vendredi')
-                                                            <td tabindex="5">{{ $t->heure_debut }} - {{ $t->heure_debut }}
+                                                            <td class="d-flex align-items">{{ $t->heure_debut }} - {{ $t->heure_fin }}
+                                                                <!-- Bouton pour appeler le modal de modification -->
+                                                                <a class="btn btn-primary btn-action mr-1" onclick="edit_tache($t-id);"
+                                                                    title="Modifier">
+                                                                    <i class="fas fa-pencil-alt"></i>
+                                                                </a>
+
+                                                                <!-- Bouton pour effectuer la suppression -->
+                                                                <a class="btn btn-danger btn-action" title="Supprimer"
+                                                                    onclick="delete_tache($t-id);">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
                                                             </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5">{{ $t->name }} <br> {{ $t->description }}
-                                                                <br> salle: {{ $s->name }}</td>
+                                                                <br> salle: {{ $s->name }}
+                                                            </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                         @break
 
                                                         @case('Samedi')
-                                                            <td tabindex="5">{{ $t->heure_debut }} - {{ $t->heure_fin }}
+                                                            <td class="d-flex align-items">{{ $t->heure_debut }} - {{ $t->heure_fin }}
+                                                                <!-- Bouton pour appeler le modal de modification -->
+                                                                <a class="btn btn-primary btn-action mr-1" onclick="edit_tache($t-id);"
+                                                                    title="Modifier">
+                                                                    <i class="fas fa-pencil-alt"></i>
+                                                                </a>
+
+                                                                <!-- Bouton pour effectuer la suppression -->
+                                                                <a class="btn btn-danger btn-action" title="Supprimer"
+                                                                    onclick="delete_tache($t-id);">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
                                                             </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
@@ -213,12 +233,24 @@
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5">{{ $t->name }} <br> {{ $t->description }}
-                                                                <br> salle: {{ $s->name }}</td>
+                                                                <br> salle: {{ $s->name }}
+                                                            </td>
                                                             <td tabindex="5"></td>
                                                         @break
 
                                                         @case('Dimanche')
-                                                            <td tabindex="5">{{ $t->heure_debut }} - {{ $t->heure_debut }}
+                                                            <td class="d-flex align-items">{{ $t->heure_debut }} - {{ $t->heure_fin }}
+                                                                <!-- Bouton pour appeler le modal de modification -->
+                                                                <a class="btn btn-primary btn-action mr-1" onclick="edit_tache($t-id);"
+                                                                    title="Modifier">
+                                                                    <i class="fas fa-pencil-alt"></i>
+                                                                </a>
+
+                                                                <!-- Bouton pour effectuer la suppression -->
+                                                                <a class="btn btn-danger btn-action" title="Supprimer"
+                                                                    onclick="delete_tache($t-id);">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
                                                             </td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
@@ -227,28 +259,17 @@
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5"></td>
                                                             <td tabindex="5">{{ $t->name }} <br> {{ $t->description }}
-                                                                <br> salle: {{ $s->name }}</td>
+                                                                <br> salle: {{ $s->name }}
+                                                            </td>
                                                         @break
 
                                                         @default
                                                     @endswitch
-                                                    {{-- <td tabindex="5"></td>
-                                                    <td tabindex="5"></td>
-                                                    <td tabindex="5"></td>
-                                                    <td tabindex="5"></td>
-                                                    <td tabindex="5"></td>
-                                                    <td tabindex="5"></td>
-                                                    <td tabindex="5"></td>
-                                                    <td tabindex="5"></td> --}}
                                                 </tr>
-                                                {{-- @endforeach --}}
                                             @endforeach
-
                                         </tbody>
                                     </table>
                                     <button id="saveButton" class="btn btn-primary mt-3">Enregistrer</button>
-                                    {{-- <input --}}
-                                    {{-- style="position: absolute; top: 309px; left: 25.0154px; padding: 0px 10px; text-align: left; font: 400 14px / 21px Nunito, &quot;Segoe UI&quot;, arial; border: 0px none rgb(33, 37, 41); width: 275.641px; height: 60px; display: none;"> --}}
                                 </div>
                             </div>
                         </div>
@@ -288,7 +309,7 @@
                         <div class="form-group">
                             <label>Heure de debut</label>
                             <div class="input-group">
-                                <input type="time" class="form-control" placeholder="heure de debut"
+                                <input type="time" class="form-control" placeholder="heure de debut" id="heure_debut"
                                     name="heure_debut" required>
                             </div>
                         </div>
@@ -296,7 +317,7 @@
                             <label>Heure de fin</label>
                             <div class="input-group">
                                 <input type="time" class="form-control" placeholder="heure de fin" name="heure_fin"
-                                    required>
+                                    id="heure_fin" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -319,9 +340,6 @@
                         </div>
                         <div class="form-group">
                             <label>Jour</label>
-                            {{-- <div class="input-group">
-                                <input type="date" class="form-control" placeholder="jour" name="jour">
-                            </div> --}}
                             <select class="form-control" name="jour" id="jour">
                                 <option value=""></option>
                                 <option value="Lundi">Lundi</option>
@@ -345,125 +363,160 @@
     </div>
 @endsection
 
-{{-- @foreach ($arr as $val)
-<tr role="row" class="odd">
-    <td class="sorting_1"><a href="{{ route('calendar') }}">{{ $val->name }}</a></td>
-    <td>{{ $val->description }}</td>
-    <td>{{ $val->heure_debut }}</td>
-    <td>{{ $val->heure_fin }}</td>
-    <td>{{ $val->date_debut }}</td>
-    <td>{{ $val->date_fin }}</td>
-    {{-- <td style="display: flex"> --}}
+
+<div class="modal" id="modifModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modifModalLabel">Modifier une tache</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @foreach ($task as $t )
+
+            <div class="modal-body" id="modifModalBody">
+                <form action="{{ route('tache_update', $t->id) }}" method="post">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <label for="name">Titre de la tache</label>
+                        <input type="text" class="form-control" value="{{ $t->name }}" name="name"
+                            id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <div class="input-group">
+                            <textarea name="description" id="" cols="30" rows="10" class="form-control phone-number">{{ $t->description }}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="heure_debut">Heure de début</label>
+                        <input type="time" class="form-control" placeholder="heure de debut" name="heure_debut"
+                            id="heure_debut" value="{{ $t->heure_debut }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="heure_fin">Heure de fin</label>
+                        <input type="time" class="form-control" placeholder="heure de fin" name="heure_fin"
+                            id="heure_fin" value="{{ $t->heure_fin }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_debut">Date de début</label>
+                        <input type="date" class="form-control" placeholder="date de debut" name="date_debut"
+                            id="date_debut" value="{{ $t->date_debut }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_fin">Date de fin</label>
+                        <input type="date" class="form-control" value="{{ $t->date_fin }}" placeholder="date de fin" name="date_fin"
+                            id="date_fin">
+                    </div>
+                    <button type="submit" class="btn btn-primary m-t-15 waves-effect">Enregistrer</button>
+                </form>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+{{-- <td style="display: flex"> --}}
 {{-- <td> --}}
-<!-- Bouton pour appeler le modal de modification -->
-{{-- <a class="btn btn-primary btn-action mr-1"
-            onclick="edit_tache({{ $val->id }});" title="Modifier">
-            <i class="fas fa-pencil-alt"></i>
-        </a> --}}
 
-<!-- Bouton pour effectuer la suppression -->
-{{-- <a class="btn btn-danger btn-action" title="Supprimer"
-            onclick="delete_tache({{ $val->id }});">
-            <i class="fas fa-trash"></i>
-        </a> --}}
 
-{{-- </tr>
-@endforeach  --}}
 
 @push('script_other')
     <!-- Inclure les scripts JS de FullCalendar et ses dépendances -->
     <script src="{{ asset('assets/bundles/fullcalendar/fullcalendar.min.js') }}"></script>
-    <!-- Inclure le script JS pour jsPDF -->
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> --}}
-    <script src="{{ asset('assets/js/jspdf.umd.min.js') }}"></script>
-
     <script>
-        var calendar = $('#myEvent').fullCalendar({
-            height: 'auto',
-            defaultView: 'month',
-            editable: true,
-            selectable: true,
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay,listMonth'
-            },
-            dayNamesShort: moment.weekdaysShort(true), // Utilisez les noms des jours abrégés
-            monthNames: moment.months(true), // Utilisez les noms des mois
-            // locale: '{{ app()->getLocale() }}',
+        document.getElementById('generatePdf').addEventListener('click', function() {
+            var element = document.getElementById(
+                'tableExport'); // Remplacez 'contenu-a-imprimer' par l'ID de l'élément que vous souhaitez imprimer
 
-            events: [
-
-            ],
-            eventClick: function(event) {
-                if (event.url) {
-                    window.open(event.url);
-                    return false;
-                }
-            },
+            html2pdf(element);
         });
 
-        // Ajouter le bouton d'impression
-        $('.fc-right').append(
-            '<button class="btn btn-sm btn-primary" id="printButton"><i class="fas fa-print"></i> Imprimer</button>');
+        // $('.fc-right').append(
+        //     '<button class="btn btn-sm btn-primary" id="generatePdf"><i class="fas fa-print"></i> Imprimer</button>');
+    </script>
 
-        function printCalendar() {
-            // Imprime la page actuelle
-            window.print();
+    <!-- Ajoutez cette balis;:e script à votre vue -->
+    <script>
+        // Fonction pour formater l'heure au format 24 heures
+        function formatTime(timeString) {
+            var timeArray = timeString.split(':');
+            var hours = parseInt(timeArray[0], 10);
+            var minutes = timeArray[1];
+            var suffix = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            return hours + ':' + minutes + ' ' + suffix;
         }
-        //     document.getElementById('printButton').addEventListener('click', function () {
-        //        window.location.href = '/generate-pdf'; // Rediriger vers la route pour générer le PDF
-        //    });
-
-        // function printCalendar() {
-        //     // Créer une instance de jsPDF
-        //     var doc = new jsPDF();
-
-        //     // Obtenir le contenu HTML du calendrier
-        //     var calendarContent = document.getElementById('myEvent').innerHTML;
-
-        //     // Ajouter le contenu HTML au PDF
-        //     doc.fromHTML(calendarContent, 15, 15);
-
-        //     // Imprimer le PDF
-        //     doc.autoPrint();
-
-        //     // Enregistrer le PDF
-        //     doc.save('calendrier.pdf');
-        // }
 
 
-        // Gérer le clic sur le bouton d'impression
-        $('#printButton').on('click', function() {
-            printCalendar();
-        });
     </script>
-    <script>
-        $(document).ready(function() {
-            // Initialize DataTable
-            const table = $('#tableExport').DataTable();
 
-            // Add a new row
-            $('#addRowButton').on('click', function() {
-                table.row.add(['', '']).draw();
-            });
-
-            // Save table data
-            $('#saveButton').on('click', function() {
-                const data = table.rows().data().toArray();
-
-                // You can now send the 'data' array to your Laravel backend for processing
+<script type="text/javascript">
+    function edit_tache(id) {
+        var formUpdateTache = document.getElementById('modifModalBody');
+        formUpdateTache.setAttribute('action', "/tache_update/" + id);
+        var url = "/tache_update/" + id;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(data) {
                 console.log(data);
-                // Example: You can use AJAX to send data to the server
-                // $.ajax({
-                //     type: 'POST',
-                //     url: '/save-table',
-                //     data: {tableData: data},
-                //     success: function (response) {
-                //         console.log(response);
-                //     }
-                // });
-            });
+                if (data === 'off') {
+                    // Gérez le cas où les données ne sont pas disponibles
+                } else {
+                    $('#name').val(data.name);
+                    $('#description').val(data.description);
+                    $('#heure_debut').val(data.heure_debut);
+                    $('#heure_fin').val(data.heure_fin);
+                    $('#date_debut').val(data.date_debut);
+                    $('#date_fin').val(data.date_fin);
+                    console.log('Form data:', data); // Ajout de la vérification des données
+                }
+            }
         });
-    </script>
+
+        $('#modifModal').modal('show');
+    }
+
+    function delete_tache(id) {
+        swal({
+            title: 'Suppression',
+            text: 'Voulez-vous vraiment supprimer ??',
+            icon: 'warning',
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                var url = "/destroy/" + id;
+                var xhr = new XMLHttpRequest();
+                xhr.open('DELETE', url);
+                xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        console.log(response);
+                        if (response === 'ok') {
+                            swal('Suppression réussie avec succès !!', {
+                                icon: 'success',
+                            });
+                            location.reload();
+                        } else {
+                            swal('Une erreur est survenue  !!', {
+                                icon: 'error',
+                            });
+                        }
+                    } else {
+                        swal('Une erreur est survenue  !!', {
+                            icon: 'error',
+                        });
+                    }
+                };
+                xhr.send();
+            }
+        });
+    }
+</script>
 @endpush

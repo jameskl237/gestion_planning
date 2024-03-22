@@ -26,7 +26,7 @@
                                                     <div class="text-right">
                                                         <h3 class="font-light mb-0">
                                                             <i class="ti-arrow-up text-success"></i><a
-                                                                href="{{ route('affiche_planning', $plan->id) }}">{{ $plan->name }}</a>
+                                                                href="{{ route('affiche_eval', $plan->id) }}">{{ $plan->name }}</a>
                                                         </h3>
                                                         <span class="text-muted">{{ $plan->description }}</span>
                                                     </div>
@@ -55,7 +55,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="" method="POST" action="{{ route('store_planning') }}">
+                    <form class="" method="POST" action="{{ route('store_eval') }}">
                         @csrf
                         @method('POST')
                         <div class="form-group">
@@ -70,21 +70,7 @@
                                 <textarea name="description" id="" cols="30" rows="10" class="form-control phone-number"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="pretty p-default p-smooth p-bigger">
-                                <input type="checkbox">
-                                <div class="state p-info">
-                                    <label>Cours & TD</label>
-                                </div>
-                            </div>
 
-                            <div class="pretty p-default p-smooth p-bigger">
-                                <input type="checkbox">
-                                <div class="state p-info">
-                                    <label>Evaluation</label>
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <div class="form-group mb-0">
 

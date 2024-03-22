@@ -121,26 +121,33 @@
                         @php
                             if (Auth::user()) {
                                 $im = Auth::user()->image;
-                            }else{
+                            } else {
                                 $im = 'public\template\assets\img\banner\1.png';
                             }
                         @endphp
-                        <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image" src="{{ $im }}" class="user-img-radious-style"> <span class="d-sm-none d-lg-inline-block"></span></a>
+                        <li class="dropdown"><a href="#" data-toggle="dropdown"
+                                class="nav-link dropdown-toggle nav-link-lg nav-link-user"> <img alt="image"
+                                    src="{{ $im }}" class="user-img-radious-style"> <span
+                                    class="d-sm-none d-lg-inline-block"></span></a>
                             <div class="dropdown-menu dropdown-menu-right pullDown">
-                              <div class="dropdown-title">{{ Auth::user()->name }}</div>
-                              <a href="profile.html" class="dropdown-item has-icon"> <i class="far
-                                                        fa-user"></i> Profile
-                              </a> <a href="timeline.html" class="dropdown-item has-icon"> <i class="fas fa-bolt"></i>
-                                Activities
-                              </a> <a href="#" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
-                                Settings
-                              </a>
-                              <div class="dropdown-divider"></div>
-                              <a href="{{ route('logout') }}" class="dropdown-item has-icon text-danger"> <i class="fas fa-sign-out-alt"></i>
-                                Logout
-                              </a>
+                                <div class="dropdown-title">{{ Auth::user()->name }}</div>
+                                <a href="profile.html" class="dropdown-item has-icon"> <i
+                                        class="far
+                                                        fa-user"></i>
+                                    Profile
+                                </a> <a href="timeline.html" class="dropdown-item has-icon"> <i
+                                        class="fas fa-bolt"></i>
+                                    Activities
+                                </a> <a href="#" class="dropdown-item has-icon"> <i class="fas fa-cog"></i>
+                                    Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="{{ route('logout') }}" class="dropdown-item has-icon text-danger"> <i
+                                        class="fas fa-sign-out-alt"></i>
+                                    Logout
+                                </a>
                             </div>
-                          </li>
+                        </li>
                 </div>
             </nav>
         </div>
@@ -161,11 +168,19 @@
                             <span> Liste des Taches</span>
                         </a>
                     </li>
-                    <li class="{{ Request::is('plannings') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('plannings') }}" class="nav-link">
-                            <i data-feather="book"></i>
-                            <span>Planifier</span>
-                        </a>
+                    <li class="dropdown">
+                        <a href="#" class="menu-toggle nav-link has-dropdown"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-briefcase">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2">
+                                </rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg><span>Plannifier</span></a>
+                        <ul class="dropdown-menu" style="display: none;">
+                            <li><a class="nav-link" href="{{ route('plannings') }}">Planning Cours & TD</a></li>
+                            <li><a class="nav-link" href="{{ route('eval') }}">Planning evaluation</a></li>
+                        </ul>
                     </li>
                     <li class="{{ Request::is('notification') ? 'active' : '' }}"><a class="nav-link"
                             href="{{ route('notif') }}"><i data-feather="plus"></i><span>Notifications</span></a>

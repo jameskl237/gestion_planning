@@ -27,7 +27,7 @@ class AuthController extends Controller
             return to_route('auth.login')->withErrors('email=>invalid')->onlyInput('email');
 
         }catch (\Exception $e) {
-            toastr()->error('Operation reussie', "Une Erreur c'est produite");
+            toastr()->error('erreur serveur', "Une Erreur c'est produite");
             return back()->with('error'. $e->getMessage());
         }
     }
