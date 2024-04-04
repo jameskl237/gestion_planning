@@ -7,6 +7,8 @@ use App\Models\Todo;
 use App\Models\Todo_user;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Todo_planning;
+use App\Models\Todo_salle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -211,19 +213,24 @@ class TodoController extends Controller
     }
 
     public function destroy_web($id)
-    {
-        try {
-            $todo = Todo::where('id', $id)->first();
-            if ($todo) {
-                $todo->delete();
-                return response()->json('ok');
-            } else {
-                return response()->json('off');
-            }
-        } catch (\Exception $e) {
+{
+    try {
+        $todo = Todo::find($id);
+        if ($todo) {
+            $todo_user = Todo_user::where('todo_id', $id)->delete();
+            $todo_planning = Todo_planning::where('todo_id', $id)->delete();
+            $todo_salle = Todo_salle::where('todo_id', $id)->delete();
+
+            $todo->delete();
+
+            return response()->json('ok');
+        } else {
             return response()->json('off');
         }
+    } catch (\Exception $e) {
+        return response()->json('off');
     }
+}
 
     public function info(Todo $todo)
     {

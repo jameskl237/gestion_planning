@@ -36,7 +36,6 @@ Route::get('/inscrire', [UserController::class, 'index'])->name('inscrire');
 Route::post('/inscrire', [UserController::class, 'store'])->name('new');
 Route::middleware('auth')->group(function () {
 
-
     Route::resource('todo', TodoController::class);
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -63,16 +62,18 @@ Route::middleware('auth')->group(function () {
         // Route::get('/plannings', 'index')->name('plannings');
     });
 
-    Route::prefix('/')->controller(PlanningController::class)->group(function () {
+    Route::prefix('/')->controller(PlanningController::class)->group(function () {  
         Route::get('/plannings', 'index')->name('plannings');
         Route::get('/affichage/{id}', 'affiche')->name('affiche_planning');
         Route::post('/ajout/{id}','store_tache')->name('ajout');
         Route::post('/store', 'store')->name('store_planning');
         Route::post('/store_evaluation', 'store_eval')->name('store_eval');
-        Route::post('/pdf{id}', 'getPDF')->name('pdf');
+        Route::post('/pdf/{id}', 'getPDF')->name('pdf');
         Route::get('/planning_evaluation', 'plannings_eval')->name('eval');
         Route::get('/affiche_eval/{id}', 'affiche_eval')->name('affiche_eval');
         Route::post('/ajout_evaluation/{id}', 'store_tache_eval')->name('store_tache_eval');
+        Route::delete('/destroy_planning/{id}', 'destroy_planning')->name('destroy_planning');
+        Route::post('/edit/{id}/{id_tache}','edit_tache')->name('edit');
 
     });
 

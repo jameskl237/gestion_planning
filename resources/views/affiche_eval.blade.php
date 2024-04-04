@@ -84,7 +84,6 @@
                                                     <td>Salle non trouvée</td>
                                                 @endif
                                             </tr>
-
                                             @php
                                                 $i++;
                                             @endphp

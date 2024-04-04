@@ -29,7 +29,14 @@
                                                                 href="{{ route('affiche_planning', $plan->id) }}">{{ $plan->name }}</a>
                                                         </h3>
                                                         <span class="text-muted">{{ $plan->description }}</span>
+
+
                                                     </div>
+                                                     <!-- Bouton pour effectuer la suppression -->
+                                                        <a class="btn btn-danger btn-action" title="Supprimer"
+                                                            onclick="delete_tache({{ $plan->id }});">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -70,21 +77,7 @@
                                 <textarea name="description" id="" cols="30" rows="10" class="form-control phone-number"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="pretty p-default p-smooth p-bigger">
-                                <input type="checkbox">
-                                <div class="state p-info">
-                                    <label>Cours & TD</label>
-                                </div>
-                            </div>
 
-                            <div class="pretty p-default p-smooth p-bigger">
-                                <input type="checkbox">
-                                <div class="state p-info">
-                                    <label>Evaluation</label>
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <div class="form-group mb-0">
 
@@ -98,3 +91,45 @@
         </div>
     </div>
 @endsection
+
+@push('script_other')
+    <script>
+        function delete_tache(id) {
+            swal({
+                title: 'Suppression',
+                text: 'Voulez-vous vraiment supprimer ??',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    var url = "/destroy_planning/" + id;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('DELETE', url);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            var response = JSON.parse(xhr.responseText);
+                            console.log(response);
+                            if (response === 'ok') {
+                                swal('Suppression réussie avec succès !!', {
+                                    icon: 'success',
+                                });
+                                location.reload();
+                            } else {
+                                swal('Une erreur est survenue  !!', {
+                                    icon: 'error',
+                                });
+                            }
+                        } else {
+                            swal('Une erreur est survenue  !!', {
+                                icon: 'error',
+                            });
+                        }
+                    };
+                    xhr.send();
+                }
+            });
+        }
+    </script>
+@endpush

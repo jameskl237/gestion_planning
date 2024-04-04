@@ -89,9 +89,9 @@
                                         <div class="card">
                                             <div class="card-header">
                                                 <h4 class="d-inline">Liste du Personnel</h4>
-                                                <div class="card-header-action">
+                                                {{-- <div class="card-header-action">
                                                     <a href="#" class="btn btn-primary">View All</a>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                             <div class="card-body">
                                                 <ul class="list-unstyled list-unstyled-border">
