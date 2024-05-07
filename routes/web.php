@@ -8,6 +8,7 @@ use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\AddController;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Storage;
@@ -34,6 +35,12 @@ Route::get('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/login', [AuthController::class, 'dologin']);
 Route::get('/inscrire', [UserController::class, 'index'])->name('inscrire');
 Route::post('/inscrire', [UserController::class, 'store'])->name('new');
+Route::get('/remplir_bd', [AddController::class, 'remplir'])->name('remplir_bd');
+Route::post('/add_dep', [AddController::class, 'add_dep'])->name('add_dep');
+Route::post('/add_user', [AddController::class, 'add_user'])->name('add_user');
+Route::post('/add_role', [AddController::class, 'add_role'])->name('add_role');
+Route::post('/add_sal', [AddController::class, 'add_sal'])->name('add_sal');
+
 Route::middleware('auth')->group(function () {
 
     Route::resource('todo', TodoController::class);
@@ -55,6 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('/')->controller(UserController::class)->group(function () {
         Route::get('/programmer', 'getPersonnel')->name('programmer');
         Route::get('/profil', 'profil')->name('profil');
+        Route::get('/info', 'info')->name('info');
     });
 
     Route::prefix('/')->controller(CalendarController::class)->group(function () {
@@ -62,7 +70,7 @@ Route::middleware('auth')->group(function () {
         // Route::get('/plannings', 'index')->name('plannings');
     });
 
-    Route::prefix('/')->controller(PlanningController::class)->group(function () {  
+    Route::prefix('/')->controller(PlanningController::class)->group(function () {
         Route::get('/plannings', 'index')->name('plannings');
         Route::get('/affichage/{id}', 'affiche')->name('affiche_planning');
         Route::post('/ajout/{id}','store_tache')->name('ajout');
@@ -73,9 +81,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/affiche_eval/{id}', 'affiche_eval')->name('affiche_eval');
         Route::post('/ajout_evaluation/{id}', 'store_tache_eval')->name('store_tache_eval');
         Route::delete('/destroy_planning/{id}', 'destroy_planning')->name('destroy_planning');
-        Route::post('/edit/{id}/{id_tache}','edit_tache')->name('edit');
-
+        Route::post('/duplique/{id}','duplique_tache')->name('duplique');
+        Route::get('/get/{id}', 'get_tache')->name('get_tache');
     });
+
+    Route::put('/edit/{id}',[PlanningController::class, 'edit_tache'])->name('edit');
+
 
     // Route::get('/generate-pdf', function () {
     //     $dompdf = new Dompdf();

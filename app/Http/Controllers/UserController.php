@@ -26,7 +26,9 @@ class UserController extends Controller
     public function profil()
     {
         $user= auth()->user();
-        return view('profil',compact('user'));
+        $role = Role::find($user->role_id);
+        $dep = Departement::find($user->departement_id);
+        return view('profil',compact('user', 'role', 'dep'));
     }
     /**
      * Show the form for creating a new resource.
@@ -51,7 +53,7 @@ class UserController extends Controller
             $requiredFields = ['name', 'email', 'password'];
             foreach ($requiredFields as $field) {
                 if (empty($request->$field)) {
-                    toastr()->error('erreur', "Remplissez tous les champs");
+                    toastr()->error('error', "Remplissez tous les champs");
                     return redirect()->back()->with('message', 'Remplissez tous les champs');
                 }
             }
@@ -67,39 +69,30 @@ class UserController extends Controller
 
             // Récupérer l'ID du rôle en fonction du nom du rôle
             $role = Role::where('nom', $request->role)->first();
+
             if ($role) {
                 $new_user->role_id = $role->id;
             } else {
-                toastr()->error('erreur', "Le rôle spécifié n\'a pas été trouvé");
+                toastr()->error('error', "Le rôle spécifié n\'a pas été trouvé");
                 return redirect()->back()->with('erreur', 'Le rôle spécifié n\'a pas été trouvé');
             }
 
-            // Récupérer l'ID du département en fonction du nom du département
-            $dep = Departement::where('nom', $request->departement)->first();
-            $new_user->departement_id = $dep->id ? $dep->id :'';
-
-            // if ($dep) {
-            //     $new_user->departement_id = $dep->id;
-            // } else {
-            //     toastr()->error('erreur', "Le département spécifié n\'a pas été trouvé");
-            //     return redirect()->back()->with('message', 'Le département spécifié n\'a pas été trouvé');
-            // }
+            $new_user->departement_id = $request->departement;
 
             // Gérer l'upload de l'image
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
-                $new_user->image = $imageName;
+                $new_user->image = $imageName ? $imageName:'NULL';
             }
 
             $new_user->save();
-            // dd('1');
             toastr()->success('success',"Utilisateur enregistré avec succès");
             return redirect()->route('auth.login');
+
         } catch (\Exception $e) {
-            // dd('1');
-            toastr()->error('erreur', "Une erreur s\'est produite ");
+            toastr()->error('error', "Une erreur s\'est produite ");
             return redirect()->back()->with('error', 'Une erreur s\'est produite : ' . $e->getMessage());
         }
     }
@@ -154,7 +147,7 @@ class UserController extends Controller
     {
 
         $user = auth()->user();
-        if($user->deparetement_id == 'NULL'){
+        if($user->deparetement_id == 'NULL' && $user->role_id = 1){
             $tab = User::where('role_id', '>', $user->role_id)->get();
         }else {
             $tab = User::where('role_id', '>', $user->role_id)
@@ -162,5 +155,18 @@ class UserController extends Controller
             ->get();
         }
         return view('programmer_personnel', compact('tab'));
+    }
+
+    public function info()
+    {
+        $user = auth()->user();
+        if($user->deparetement_id == 'NULL' && $user->role_id = 1){
+            $tab = User::where('role_id', '>', $user->role_id)->get();
+        }else {
+            $tab = User::where('role_id', '>', $user->role_id)
+            ->where('departement_id', '=', $user->departement_id)
+            ->get();
+        }
+        return view('info', compact('tab'));
     }
 }

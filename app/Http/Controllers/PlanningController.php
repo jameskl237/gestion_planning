@@ -39,22 +39,19 @@ class PlanningController extends Controller
         $var = $todplan->pluck('todo_id');
         $task = Todo::whereIn('id', $var)->get();
 
-        $to_sal = Todo_salle::whereIn('todo_id', $var)->get();
-        $sa = $to_sal->pluck('salle_id');
-        $sal = Salle::WhereIn('id', $sa)->get();
-
         $salle = Salle::all();
+        $planning = Planning::find($id);
 
         $user = auth()->user();
-        if($user->deparetement_id == 'NULL'){
+        if ($user->deparetement_id == 'NULL') {
             $tab = User::where('role_id', '>', $user->role_id)->get();
-        }else {
+        } else {
             $tab = User::where('role_id', '>', $user->role_id)
-            ->where('departement_id', '=', $user->departement_id)
-            ->get();
+                ->where('departement_id', '=', $user->departement_id)
+                ->get();
         }
 
-        return view('affiche_planning', compact('id', 'task', 'salle', 'sal', 'tab'));
+        return view('affiche_planning', compact('id', 'task', 'salle', 'tab', 'planning'));
     }
 
     public function affiche_eval($id)
@@ -70,7 +67,16 @@ class PlanningController extends Controller
         $salle = Salle::all();
         $i = 1;
 
-        return view('affiche_eval', compact('id', 'ta', 'salle', 'sal', 'i'));
+        $user = auth()->user();
+        if ($user->deparetement_id == 'NULL') {
+            $tab = User::where('role_id', '>', $user->role_id)->get();
+        } else {
+            $tab = User::where('role_id', '>', $user->role_id)
+                ->where('departement_id', '=', $user->departement_id)
+                ->get();
+        }
+
+        return view('affiche_eval', compact('id', 'ta', 'salle', 'sal', 'i', 'tab'));
     }
 
     public function getPdf($id)
@@ -237,13 +243,17 @@ class PlanningController extends Controller
                     $liaison->planning_id = $id;
                     $liaison->save();
 
-                    $salle->todo_id = $todo->id;
-                    $salle->salle_id = $request->salle;
-                    $salle->save();
+                    if ($request->salle != NULL) {
+                        $salle->todo_id = $todo->id;
+                        $salle->salle_id = $request->salle;
+                        $salle->save();
+                    }
 
-                    $prof->todo_id = $todo->id;
-                    $prof->user_id = $request->sub;
-                    $prof->save();
+                    if ($request->sub != NULL) {
+                        $prof->todo_id = $todo->id;
+                        $prof->user_id = $request->sub;
+                        $prof->save();
+                    }
 
                     toastr()->success('Success', 'Opération réussie');
                     return redirect()->route('affiche_planning', $id);
@@ -255,47 +265,28 @@ class PlanningController extends Controller
         }
     }
 
-    public function edit_tache(Request $request, $id, $id_tache)
+    public function get_tache(Request $request, $id)
     {
-
         try {
+
             $user = auth()->user();
             $todo = Todo::find($id);
-
-            $todo->name = $request->name;
-            $todo->description = $request->description;
-            $todo->date_debut = $request->date_debut;
-            $todo->date_fin = $request->date_fin;
-            $todo->heure_debut = Carbon::now()->toDateString();
-            $todo->heure_fin = Carbon::now()->toDateString();
-            $todo->jour = $request->jour;
-            $todo->user_id = $user->id;
-            $todo->save();
-
-
-            return redirect()->back()->with('success', 'Task successfully update');
+            return response()->json($todo);
         } catch (\Exception $e) {
-            toastr()->error('erreur', "Une Erreur c'est produite");
-            return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
+            return response()->json('error');
         }
     }
-
 
 
     public function store_tache_eval(Request $request, $id)
     {
         $salle = Salle::where('name', $request->salle)->first();
 
-        // if (!$salle) {
-        //     toastr()->error('Erreur', 'Salle non trouvée');
-        //     return redirect()->route('affiche_eval', $id);
-        // }
-
         $ta = Todo::where('date_debut', '=', $request->date_debut)
             ->where('heure_debut', '=', $request->heure_debut)
             ->where('heure_fin', '=', $request->heure_fin)->get();
 
-        if ($ta->isNotEmpty()) {
+        if ($ta) {
             toastr()->error('Erreur', 'Date et horaire déjà utilisées pour une autre evaluation');
             return redirect()->route('affiche_eval', $id);
         }
@@ -331,7 +322,12 @@ class PlanningController extends Controller
         $liaison_salle->salle_id = $request->salle;
         $liaison_salle->save();
 
-        // $todo->salles()->attach($salle->id);
+        $prof = new Todo_user();
+
+        $prof->todo_id = $todo->id;
+        $prof->user_id = $request->sub;
+        $prof->save();
+
 
         toastr()->success('Success', 'Opération réussie');
         return redirect()->route('affiche_eval', $id);
@@ -351,9 +347,10 @@ class PlanningController extends Controller
         try {
             $planning = Planning::find($id);
 
-            if ($planning->isNotEmpty()) {
-                $todo = Todo::where('planning_id', $id)->get();
-                $todo_select_column = $todo->pluck('id');
+            if ($planning) {
+
+                $todo = Todo_planning::where('planning_id', $id)->get();
+                $todo_select_column = $todo->pluck('todo_id');
 
                 Todo_user::whereIn('todo_id', $todo_select_column)->delete();
                 Todo_planning::where('planning_id', $id)->delete();
@@ -370,76 +367,146 @@ class PlanningController extends Controller
         }
     }
 
-    public function duplique_tache(Request $request, $id, $id_tache)
+    public function duplique_tache(Request $request, $id)
+{
+    try {
+
+        $plan = Todo_planning::where('todo_id', $id)->first();
+
+        // Vérifiez si une tâche existe déjà avec les mêmes horaires et le même jour
+        $existingTask = Todo::where('id', '!=', $id)
+            ->where('heure_debut', $request->heure_debutduplique)
+            ->where('heure_fin', $request->heure_finduplique)
+            ->where('jour', $request->jourduplique)
+            ->exists();
+
+        if ($existingTask) {
+            toastr()->error('Erreur', 'Marge horaire occupée');
+            return redirect()->back();
+        } else {
+            // Validation des champs requis
+            $request->validate([
+                'heure_debutduplique' => 'required',
+                'heure_finduplique' => 'required',
+                'jourduplique' => 'required',
+            ]);
+
+            $user = auth()->user();
+            $todo_init = Todo::find($id);
+
+            // Créez une nouvelle tâche basée sur les données de la tâche initiale
+            $todo = new Todo();
+            $todo->name = $todo_init->name;
+            $todo->description = $todo_init->description;
+            $todo->date_debut = $todo_init->date_debut;
+            $todo->date_fin = $todo_init->date_debut; // Est-ce que c'est correct ?
+            $todo->heure_debut = $request->heure_debutduplique;
+            $todo->heure_fin = $request->heure_finduplique;
+            $todo->jour = $request->jourduplique;
+            $todo->user_id = $user->id;
+            $todo->save();
+
+            // Créez une liaison avec le planning
+            $liaison = new Todo_planning();
+            $liaison->todo_id = $todo->id;
+            $liaison->planning_id = $plan->planning_id;
+            $liaison->save();
+
+            // Dupliquez la salle et le professeur associés à la tâche initiale
+            $salle_init = Todo_salle::where('todo_id', $todo_init->id)->first();
+            if ($salle_init) {
+                $salle = new Todo_salle();
+                $salle->todo_id = $todo->id;
+                $salle->salle_id = $salle_init->salle_id;
+                $salle->save();
+            }
+
+            $prof_init = Todo_user::where('todo_id', $todo_init->id)->first();
+            if ($prof_init) {
+                $prof = new Todo_user();
+                $prof->todo_id = $todo->id;
+                $prof->user_id = $prof_init->user_id;
+                $prof->save();
+            }
+
+            toastr()->success('Success', 'Opération réussie');
+            return redirect()->back();
+
+        }
+    } catch (\Exception $e) {
+        return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
+    }
+}
+
+
+    // modification d'une tache dans un planning
+
+    public function edit_tache(Request $request, $id)
     {
         try {
-            $plan = Todo_planning::where('planning_id', $id)->get();
 
-            $tache = Todo::whereIn('id', $plan->pluck('todo_id'))
-                ->where('heure_debut', '=', $request->heure_debut)
-                ->where('heure_fin', '=', $request->heure_fin)
-                ->where('jour', $request->jour)
-                ->get();
+            $tache = Todo::where('id', '!=', $id)
+                ->where('heure_debut', $request->heure_debutmodif)
+                ->where('heure_fin', $request->heure_finmodif)
+                ->where('jour', $request->jourmodif)
+                ->exists();
 
-            if ($tache->isNotEmpty()) {
+
+            if ($tache) {
                 toastr()->error('Erreur', 'Marge horaire occupée');
-                return redirect()->route('affiche_planning', $id);
+                return redirect()->back();
             } else {
-                if (empty($request->name) || empty($request->date_debut) || empty($request->heure_debut) || empty($request->heure_fin)) {
+                if (empty($request->heure_debutmodif) || empty($request->heure_finmodif)) {
                     toastr()->error('Erreur', 'Remplissez les champs requis');
-                    return redirect()->route('affiche_planning', $id);
+                    return redirect()->back();
                 } else {
                     $user = auth()->user();
-                    $todo = new Todo();
+                    $todo = Todo::find($id);
 
-                    $todo->name = $request->name;
-                    $todo->description = $request->description;
-                    $todo->date_debut = $request->date_debut;
-                    $todo->date_fin = $request->date_debut;
-                    $todo->heure_debut = $request->heure_debut;
-                    $todo->heure_fin = $request->heure_fin;
-                    $todo->jour = $request->jour;
+                    $todo->name = $request->namemodif;
+                    $todo->description = $request->descriptionmodif;
+                    $todo->date_debut = Carbon::now()->toDateString();
+                    $todo->date_fin = Carbon::now()->toDateString();
+                    $todo->heure_debut = $request->heure_debutmodif;
+                    $todo->heure_fin = $request->heure_finmodif;
+                    $todo->jour = $request->jourmodif;
                     $todo->user_id = $user->id;
 
-                    $liaison = new Todo_planning();
-                    $salle = new Todo_salle();
+                    $salle = Todo_salle::where('todo_id', $todo->id)->first();
+                    $prof = Todo_user::where('todo_id', $todo->id)->first();
 
-                    if ($request->heure_debut >= $request->heure_fin) {
+                    if ($request->heure_debutmodif >= $request->heure_finmodif) {
                         toastr()->error('Erreur', 'L\'heure de début doit être antérieure à l\'heure de fin');
-                        return redirect()->route('affiche_planning', $id);
+                        return redirect()->back();
                     }
                     $todo->save();
 
-                    $liaison->todo_id = $todo->id;
-                    $liaison->planning_id = $id;
-                    $liaison->save();
+                    if ($salle && $request->sallemodif != NULL) {
+                        $salle->salle_id = $request->sallemodif;
+                        $salle->save();
+                    } elseif ($request->sallemodif) {
+                        $salle = new Todo_salle();
+                        $salle->todo_id = $todo->id;
+                        $salle->salle_id = $request->sallemodif;
+                        $salle->save();
+                    }
 
-                    $salle->todo_id = $todo->id;
-                    $salle->salle_id = $request->salle;
-                    $salle->save();
-
-                    $request->validate([
-                        'sub' => 'required|array|min:1', // Au moins une checkbox doit être cochée
-                    ]);
-
-                    $selectedUserIds = $request->sub; // Obtenez les ID des utilisateurs sélectionnés
-                    $selectedUsers = User::whereIn('id', $selectedUserIds)->get(); // Récupérez les utilisateurs sélectionnés
-
-                    foreach ($selectedUsers as $users) {
-                        $liaison = new Todo_user();
-                        $liaison->user_id = $users->id;
-                        $liaison->todo_id = $todo->id;
-                        $liaison->save();
+                    if ($prof && $request->submodif != NULL) {
+                        $prof->user_id = $request->submodif;
+                        $prof->save();
+                    } elseif ($request->submodif) {
+                        $prof = new Todo_user();
+                        $prof->todo_id = $todo->id;
+                        $prof->user_id = $request->submodif;
+                        $prof->save();
                     }
 
                     toastr()->success('Success', 'Opération réussie');
-                    return redirect()->route('affiche_planning', $id);
+                    return redirect()->back();
                 }
             }
         } catch (\Exception $e) {
-            // toastr()->error('Erreur', "Une erreur s'est produite");
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
     }
-
 }

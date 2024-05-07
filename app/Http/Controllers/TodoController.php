@@ -35,10 +35,7 @@ class TodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('todocreate');
-    }
+
 
     // Foction qui gere les notifications
 
@@ -91,7 +88,7 @@ class TodoController extends Controller
                 empty($request->heure_debut) ||
                 empty($request->heure_fin)
             ) {
-                toastr()->error('erreur', 'Remplissez les champs exiges');
+                toastr()->error('error', 'Remplissez les champs exiges');
                 return redirect()->route('welcome');
             } else {
                 $user = auth()->user();
@@ -112,11 +109,11 @@ class TodoController extends Controller
                 $liaison->todo_id = $todo->id;
                 $liaison->save();
 
-                toastr()->success('Successs', 'Operation reussie');
+                toastr()->success('Success', 'Operation reussie');
                 return redirect()->route('welcome')->with('success');
             }
         } catch (\Exception $e) {
-            toastr()->error('Operation reussie', "Une Erreur c'est produite");
+            toastr()->error('error', "Une Erreur c'est produite");
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
     }
@@ -199,7 +196,7 @@ class TodoController extends Controller
 
             return redirect()->route('welcome')->with('success', 'Task successfully update');
         } catch (\Exception $e) {
-            toastr()->error('erreur', "Une Erreur c'est produite");
+            toastr()->error('error', "Une Erreur c'est produite");
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
     }

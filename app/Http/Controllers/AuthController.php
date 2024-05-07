@@ -20,14 +20,14 @@ class AuthController extends Controller
             $credentials = $request->validated();
             if( Auth::attempt($credentials)){
                 session()->regenerate();
-                toastr()->success('Success','Connexion reussie');
+                toastr()->success('success','Connexion reussie');
                 return redirect()->route('welcome');
             }
-            toastr()->error('erreur', "une erreur s'est produite");
+            toastr()->error('error', "une erreur s'est produite");
             return to_route('auth.login')->withErrors('email=>invalid')->onlyInput('email');
 
         }catch (\Exception $e) {
-            toastr()->error('erreur serveur', "Une Erreur c'est produite");
+            toastr()->error('error', "Une Erreur c'est produite");
             return back()->with('error'. $e->getMessage());
         }
     }

@@ -100,7 +100,7 @@
                                                 <option></option>
                                                 @foreach ($departement as $d )
 
-                                                    <option>{{ $d->nom }}</option>
+                                                    <option value="{{ $d->id }}">{{ $d->nom }}</option>
 
                                                 @endforeach
                                             </select>

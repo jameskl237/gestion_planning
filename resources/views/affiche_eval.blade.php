@@ -70,13 +70,31 @@
                                                     $sa = App\Models\Todo_salle::where('todo_id', $t->id)->get();
                                                     $saa = $sa->pluck('salle_id');
                                                     $s = App\Models\Salle::whereIn('id', $saa)->first();
+
+                                                    $prof = App\Models\Todo_user::where('todo_id', $t->id)->first();
+                                                        $enseignant = null;
+                                                        if ($prof) {
+                                                            $enseignant = App\Models\User::find($prof->user_id);
+                                                        }
                                                 @endphp
 
-                                                <td>{{ $i }}</td>
-                                                <td>{{ $t->date_debut }} --{{ $t->date_fin }}</td>
+                                                <td>
+                                                    {{ $i }}
+
+                                                     <!-- Bouton pour effectuer la suppression -->
+                                                     <a class="btn btn-danger btn-action" title="Supprimer"
+                                                     onclick="delete_tache({{ $t->id }});">
+                                                     <i class="fas fa-trash"></i>
+                                                 </a>
+                                                </td>
+                                                <td>{{ $t->date_debut }}</td>
                                                 <td>{{ $t->heure_debut }} - {{ $t->heure_fin }}</td>
                                                 <td>{{ $t->name }} <br> </td>
-                                                <td></td>
+                                                @if($enseignant)
+                                                    <td>{{ $enseignant->name }}</td>
+                                                @else
+                                                    <td>No name</td>
+                                                @endif
 
                                                 @if($s)
                                                     <td>{{ $s->name }}</td>
@@ -135,7 +153,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Date de debut</label>
+                            <label>Date</label>
                             <div class="input-group">
                                 <input type="date" class="form-control" placeholder="date de debut" name="date_debut"
                                     required>
@@ -151,6 +169,15 @@
                                     @endforeach
                                 </select>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Enseignant</label>
+                            <select class="form-control" name="sub">
+                                <option></option>
+                                @foreach ($tab as $personne)
+                                    <option value="{{ $personne->id }}">{{ $personne->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <div class="form-group mb-0">
@@ -174,22 +201,6 @@
 @push('script_other')
     <!-- Inclure les scripts JS de FullCalendar et ses dépendances -->
     <script src="{{ asset('assets/bundles/fullcalendar/fullcalendar.min.js') }}"></script>
-    <!-- Inclure le script JS pour jsPDF -->
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> --}}
-    {{-- <script src="{{ asset('assets/js/jspdf.umd.min.js') }}"></script> --}}
-    <script src="{{ asset('js/html2pdf.bundle.min.js') }}"></script>
-
-    <script>
-        document.getElementById('generatePdf').addEventListener('click', function() {
-            var element = document.getElementById(
-                'tableExport'); // Remplacez 'contenu-a-imprimer' par l'ID de l'élément que vous souhaitez imprimer
-
-            html2pdf(element);
-        });
-
-        // $('.fc-right').append(
-        //     '<button class="btn btn-sm btn-primary" id="generatePdf"><i class="fas fa-print"></i> Imprimer</button>');
-    </script>
 
     <!-- Ajoutez cette balise script à votre vue -->
     <script>
@@ -213,30 +224,45 @@
             var heureDebutFormat = formatTime(heureDebut);
             var heureFinFormat = formatTime(heureFin);
             // e.preventDefault();
-
-
-            // Mettez à jour les valeurs dans les champs
-            // document.getElementById('heure_debut').value = heureDebutFormat;
-            // document.getElementById('heure_fin').value = heureFinFormat;
         });
-    </script>
 
-
-    {{-- <script>
-
-            // Ajouter le bouton d'impression
-            $('.fc-right').append(
-                '<button class="btn btn-sm btn-primary" id="printButton"><i class="fas fa-print"></i> Imprimer</button>');
-
-            function printCalendar() {
-                // Imprime la page actuelle
-                window.print();
-            }
-
-
-            // Gérer le clic sur le bouton d'impression
-            $('#printButton').on('click', function() {
-                printCalendar();
+        function delete_tache(id) {
+            swal({
+                title: 'Suppression',
+                text: 'Voulez-vous vraiment supprimer ??',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    var url = "/destroy/" + id;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('DELETE', url);
+                    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            var response = JSON.parse(xhr.responseText);
+                            console.log(response);
+                            if (response === 'ok') {
+                                swal('Suppression réussie avec succès !!', {
+                                    icon: 'success',
+                                });
+                                location.reload();
+                            } else {
+                                swal('Une erreur est survenue  !!', {
+                                    icon: 'error',
+                                });
+                            }
+                        } else {
+                            swal('Une erreur est survenue  !!', {
+                                icon: 'error',
+                            });
+                        }
+                    };
+                    xhr.send();
+                }
             });
-        </script> --}}
+        }
+
+    </script>
 @endpush

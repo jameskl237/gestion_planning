@@ -15,7 +15,7 @@
                                 <div class="author-box-name">
                                     <a href="#">{{ $user->name }}</a>
                                 </div>
-                                <div class="author-box-job">Statut</div>
+                                <div class="author-box-job">{{ $role->nom }}</div>
                             </div>
                             <div class="text-center">
                                 <div class="author-box-description">
@@ -27,7 +27,7 @@
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label>Name</label>
-                                                <input type="text" name="name" class="form-control">
+                                                <input type="text" name="name" value="{{ $user->name }}" class="form-control">
                                             </div>
 
                                             <div class="form-group">
@@ -38,7 +38,7 @@
                                                             <i class="fas fa-lock"></i>
                                                         </div>
                                                     </div>
-                                                    <input type="password" name="password" class="form-control pwstrength"
+                                                    <input type="password" name="password" value="{{ $user->password }}" class="form-control pwstrength"
                                                         data-indicator="pwindicator">
                                                 </div>
                                             </div>

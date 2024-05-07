@@ -68,7 +68,8 @@
                                         <tbody>
                                             @foreach ($arr as $val)
                                                 <tr role="row" class="odd">
-                                                    <td class="sorting_1"><a href="{{ route('calendar') }}">{{ $val->name }}</a></td>
+                                                    <td class="sorting_1"><a
+                                                            href="{{ route('calendar') }}">{{ $val->name }}</a></td>
                                                     <td>{{ $val->description }}</td>
                                                     <td>{{ $val->heure_debut }}</td>
                                                     <td>{{ $val->heure_fin }}</td>
@@ -84,10 +85,10 @@
 
                                                         <!-- Bouton pour effectuer la suppression -->
                                                         <a class="btn btn-danger btn-action" title="Supprimer"
-                                                            onclick="delete_tache({{ $val->id }});">
+                                                            onclick="event.preventDefault();delete_tache({{ $val->id }});">
                                                             <i class="fas fa-trash"></i>
                                                         </a>
-
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -178,47 +179,44 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            @foreach ($arr as $val )
-
-            <div class="modal-body" id="modifModalBody">
-                <form action="{{ route('tache_update', $val->id) }}" method="post">
+            <div class="modal-body">
+                <form action="" method="post" id="modifModalBody">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
                         <label for="name">Titre de la tache</label>
-                        <input type="text" class="form-control" value="{{ $val->name }}" name="name"
+                        <input type="text" class="form-control" name="name"
                             id="name" required>
                     </div>
                     <div class="form-group">
                         <label>Description</label>
                         <div class="input-group">
-                            <textarea name="description" id="" cols="30" rows="10" class="form-control phone-number">{{ $val->description }}</textarea>
+                            <textarea name="description" id="" cols="30" rows="10" class="form-control phone-number"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="heure_debut">Heure de début</label>
                         <input type="time" class="form-control" placeholder="heure de debut" name="heure_debut"
-                            id="heure_debut" value="{{ $val->heure_debut }}" required>
+                            id="heure_debut"  required>
                     </div>
                     <div class="form-group">
                         <label for="heure_fin">Heure de fin</label>
                         <input type="time" class="form-control" placeholder="heure de fin" name="heure_fin"
-                            id="heure_fin" value="{{ $val->heure_fin }}" required>
+                            id="heure_fin"  required>
                     </div>
                     <div class="form-group">
                         <label for="date_debut">Date de début</label>
                         <input type="date" class="form-control" placeholder="date de debut" name="date_debut"
-                            id="date_debut" value="{{ $val->date_debut }}" required>
+                            id="date_debut"  required>
                     </div>
                     <div class="form-group">
                         <label for="date_fin">Date de fin</label>
-                        <input type="date" class="form-control" value="{{ $val->date_fin }}" placeholder="date de fin" name="date_fin"
-                            id="date_fin">
+                        <input type="date" class="form-control"
+                            placeholder="date de fin" name="date_fin" id="date_fin">
                     </div>
                     <button type="submit" class="btn btn-primary m-t-15 waves-effect">Enregistrer</button>
                 </form>
             </div>
-            @endforeach
         </div>
     </div>
 </div>
@@ -229,14 +227,14 @@
         function edit_tache(id) {
             var formUpdateTache = document.getElementById('modifModalBody');
             formUpdateTache.setAttribute('action', "/tache_update/" + id);
-            var url = "/tache_update/" + id;
+            var url = "/get/" + id;
             $.ajax({
                 url: url,
                 type: 'GET',
                 success: function(data) {
                     console.log(data);
                     if (data === 'off') {
-                        // Gérez le cas où les données ne sont pas disponibles
+                        // Gérer le cas où les données ne sont pas disponibles
                     } else {
                         $('#name').val(data.name);
                         $('#description').val(data.description);
@@ -244,7 +242,7 @@
                         $('#heure_fin').val(data.heure_fin);
                         $('#date_debut').val(data.date_debut);
                         $('#date_fin').val(data.date_fin);
-                        console.log('Form data:', data); // Ajout de la vérification des données
+                        console.log('Données du formulaire :', data);
                     }
                 }
             });
