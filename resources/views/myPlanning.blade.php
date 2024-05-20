@@ -20,11 +20,8 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                            {{-- @php
-                                $planning = App\Models\Planning::find($id);
-                            @endphp --}}
 
-                            <h4>{{ $planning->name }}</h4>
+                            <h4>Mon planning </h4>
                             <form method="get" action="{{ route('pdf') }}">
                                 <button type="submit" class="btn btn-primary" id="generatePdf">Générer PDF</button>
                             </form>
@@ -87,11 +84,11 @@
                                                             $s = App\Models\Salle::find($sa->salle_id);
                                                         }
 
-                                                        $prof = App\Models\Todo_user::where('todo_id', $t->id)->first();
-                                                        $enseignant = null;
-                                                        if ($prof) {
-                                                            $enseignant = App\Models\User::find($prof->user_id);
-                                                        }
+                                                        // $prof = App\Models\Todo_user::where('todo_id', $t->id)->first();
+                                                        // $enseignant = null;
+                                                        // if ($prof) {
+                                                        //     $enseignant = App\Models\User::find($prof->user_id);
+                                                        // }
 
                                                     @endphp
                                                     @switch($t->jour)
@@ -117,10 +114,7 @@
                                                                     {{ $t->name }}
                                                                     <br>
                                                                     {{ $t->description }} <br>
-                                                                    @if ($enseignant)
-                                                                        {{ $enseignant->name }}
-                                                                    @else
-                                                                    @endif
+
                                                                     <br> salle:
                                                                     @if ($s)
                                                                         {{ $s->name }}
@@ -160,10 +154,6 @@
                                                                     {{ $t->name }}
                                                                     <br>
                                                                     {{ $t->description }} <br>
-                                                                    @if ($enseignant)
-                                                                        {{ $enseignant->name }}
-                                                                    @else
-                                                                    @endif
 
                                                                     <br> salle:
                                                                     @if ($s)
@@ -203,10 +193,7 @@
                                                                     {{ $t->name }}
                                                                     <br>
                                                                     {{ $t->description }} <br>
-                                                                    @if ($enseignant)
-                                                                        {{ $enseignant->name }}
-                                                                    @else
-                                                                    @endif
+
                                                                     <br> salle:
                                                                     @if ($s)
                                                                         {{ $s->name }}
@@ -245,10 +232,7 @@
                                                                     {{ $t->name }}
                                                                     <br>
                                                                     {{ $t->description }} <br>
-                                                                    @if ($enseignant)
-                                                                        {{ $enseignant->name }}
-                                                                    @else
-                                                                    @endif
+
                                                                     <br> salle:
                                                                     @if ($s)
                                                                         {{ $s->name }}
@@ -287,10 +271,7 @@
                                                                     {{ $t->name }}
                                                                     <br>
                                                                     {{ $t->description }} <br>
-                                                                    @if ($enseignant)
-                                                                        {{ $enseignant->name }}
-                                                                    @else
-                                                                    @endif
+
                                                                     <br> salle:
                                                                     @if ($s)
                                                                         {{ $s->name }}
@@ -330,10 +311,7 @@
                                                                     {{ $t->name }}
                                                                     <br>
                                                                     {{ $t->description }} <br>
-                                                                    @if ($enseignant)
-                                                                        {{ $enseignant->name }}
-                                                                    @else
-                                                                    @endif
+
                                                                     <br> salle:
                                                                     @if ($s)
                                                                         {{ $s->name }}
@@ -373,10 +351,7 @@
                                                                     {{ $t->name }}
                                                                     <br>
                                                                     {{ $t->description }} <br>
-                                                                    @if ($enseignant)
-                                                                        {{ $enseignant->name }}
-                                                                    @else
-                                                                    @endif
+
                                                                     <br> salle: @if ($s)
                                                                         {{ $s->name }}
                                                                     @else
@@ -390,60 +365,73 @@
                                                     @endswitch
                                                 </tr>
                                             @endforeach --}}
-                                            @php
-                                            $tasksByTime = [];
-                                            foreach ($task as $t) {
-                                                $timeKey = $t->heure_debut . ' - ' . $t->heure_fin;
-                                                if (!isset($tasksByTime[$timeKey])) {
-                                                    $tasksByTime[$timeKey] = [];
-                                                }
-                                                $tasksByTime[$timeKey][$t->jour] = $t;
-                                            }
-                                            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-                                        @endphp
 
-                                        @foreach ($tasksByTime as $time => $days)
-                                            <tr>
-                                                <td>{{ $time }}</td>
-                                                @foreach ($jours as $jour)
-                                                    <td>
-                                                        @if (isset($days[$jour]))
-                                                            @php
-                                                                $t = $days[$jour];
-                                                                $sa = App\Models\Todo_salle::where('todo_id', $t->id)->first();
-                                                                $s = null;
-                                                                if ($sa) {
-                                                                    $s = App\Models\Salle::find($sa->salle_id);
-                                                                }
-                                                            @endphp
-                                                            <a class="btn" onclick="duplique_tache({{ $t->id }})">
-                                                                {{ $t->name }}<br>
-                                                                {{ $t->description }}<br>
-                                                                <br>salle:
-                                                                @if ($s)
-                                                                    {{ $s->name }}
-                                                                @else
-                                                                    Nom de la salle non disponible
-                                                                @endif
-                                                            </a>
-                                                            <div class="d-flex">
-                                                                <a class="btn btn-primary btn-action mr-1"
-                                                                   onclick="edit_tache({{ $t->id }});" title="Modifier">
-                                                                    <i class="fas fa-pencil-alt"></i>
+                                            @php
+                                                $tasksByTime = [];
+                                                foreach ($task as $t) {
+                                                    $timeKey = $t->heure_debut . ' - ' . $t->heure_fin;
+                                                    if (!isset($tasksByTime[$timeKey])) {
+                                                        $tasksByTime[$timeKey] = [];
+                                                    }
+                                                    $tasksByTime[$timeKey][$t->jour] = $t;
+                                                }
+                                                $jours = [
+                                                    'Lundi',
+                                                    'Mardi',
+                                                    'Mercredi',
+                                                    'Jeudi',
+                                                    'Vendredi',
+                                                    'Samedi',
+                                                    'Dimanche',
+                                                ];
+                                            @endphp
+
+                                            @foreach ($tasksByTime as $time => $days)
+                                                <tr>
+                                                    <td>{{ $time }}</td>
+                                                    @foreach ($jours as $jour)
+                                                        <td>
+                                                            @if (isset($days[$jour]))
+                                                                @php
+                                                                    $t = $days[$jour];
+                                                                    $sa = App\Models\Todo_salle::where(
+                                                                        'todo_id',
+                                                                        $t->id,
+                                                                    )->first();
+                                                                    $s = null;
+                                                                    if ($sa) {
+                                                                        $s = App\Models\Salle::find($sa->salle_id);
+                                                                    }
+                                                                @endphp
+                                                                <a class="btn"
+                                                                    onclick="duplique_tache({{ $t->id }})">
+                                                                    {{ $t->name }}<br>
+                                                                    {{ $t->description }}<br>
+                                                                    <br>salle:
+                                                                    @if ($s)
+                                                                        {{ $s->name }}
+                                                                    @else
+                                                                        Nom de la salle non disponible
+                                                                    @endif
                                                                 </a>
-                                                                <a class="btn btn-danger btn-action" title="Supprimer"
-                                                                   onclick="delete_tache({{ $t->id }});">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </a>
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                @endforeach
-                                            </tr>
-                                        @endforeach
+                                                                {{-- <div class="d-flex">
+                                                                    <a class="btn btn-primary btn-action mr-1"
+                                                                        onclick="edit_tache({{ $t->id }});"
+                                                                        title="Modifier">
+                                                                        <i class="fas fa-pencil-alt"></i>
+                                                                    </a>
+                                                                    <a class="btn btn-danger btn-action" title="Supprimer"
+                                                                        onclick="delete_tache({{ $t->id }});">
+                                                                        <i class="fas fa-trash"></i>
+                                                                    </a>
+                                                                </div> --}}
+                                                            @endif
+                                                        </td>
+                                                    @endforeach
+                                                </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
-                                    <button id="saveButton" class="btn btn-primary mt-3">Enregistrer</button>
                                 </div>
                             </div>
                         </div>
@@ -521,7 +509,7 @@
                                 <option value="Dimanche">Dimanche</option>
                             </select>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <div class="form-group mb-0"></div>
                             <label>Enseignant</label>
                             <select class="form-control" name="submodif" id="submodif" multiple data-height="100%"
@@ -531,7 +519,7 @@
                                     <option value="{{ $personne->id }}">{{ $personne->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="form-group mb-0"></div>
                         <button type="submit" name="submit" id="submit"
                             class="btn btn-primary m-t-15 waves-effect">Enregistrer</button>
@@ -603,7 +591,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="" method="POST" action="{{ route('ajout', $id) }}">
+                    <form class="" method="POST" action="">
 
                         @csrf
                         @method('POST')
@@ -656,7 +644,7 @@
                                 <option value="Samedi">Samedi</option>
                                 <option value="Dimanche">Dimanche</option>
                             </select>
-
+                            {{--
                             <div class="form-group">
                                 <label>Enseignant</label>
                                 <select class="form-control" name="sub">
@@ -665,7 +653,7 @@
                                         <option value="{{ $personne->id }}">{{ $personne->name }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
 
                             <div class="form-group mb-0">
 
@@ -679,117 +667,3 @@
         </div>
     </div>
 @endsection
-
-
-
-
-
-@push('script_other')
-    <!-- Inclure les scripts JS de FullCalendar et ses dépendances -->
-    <script src="{{ asset('assets/bundles/fullcalendar/fullcalendar.min.js') }}"></script>
-
-    <script>
-        // Fonction pour formater l'heure au format 24 heures
-        function formatTime(timeString) {
-            var timeArray = timeString.split(':');
-            var hours = parseInt(timeArray[0], 10);
-            var minutes = timeArray[1];
-            var suffix = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            return hours + ':' + minutes + ' ' + suffix;
-        }
-    </script>
-
-    <script type="text/javascript">
-        // import $ from 'jquery';
-
-        function edit_tache(id) {
-            var formUpdateTache = document.getElementById('modifModalBody');
-            formUpdateTache.setAttribute('action', "/edit/" + id);
-            var url = "/get/" + id;
-            console.log(url);
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(data) {
-                    console.log(data);
-                    if (data === 'off') {
-                        // Gérez le cas où les données ne sont pas disponibles
-                    } else {
-                        $('#namemodif').val(data.name);
-                        $('#descriptionmodif').val(data.description);
-                        $('#heure_debutmodif').val(data.heure_debut);
-                        $('#heure_finmodif').val(data.heure_fin);
-                        $('#sallemodif').val(data.salle);
-                        $('#jourmodif').val(data.jour);
-                        $('#submodif').val(data.sub);
-                        console.log('Form data:', data.name); // Ajout de la vérification des données
-                    }
-                }
-            });
-
-            $('#modifModal').modal('show');
-        }
-
-        function duplique_tache(id) {
-            var formUpdateTache = document.getElementById('dupliqueModalBody');
-            formUpdateTache.setAttribute('action', "/duplique/" + id);
-            var url = "/get/" + id;
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(data) {
-                    console.log(data);
-                    if (data === 'off') {
-                        // Gérez le cas où les données ne sont pas disponibles
-                    } else {
-                        $('#heure_debutduplique').val(data.heure_debut);
-                        $('#heure_finduplique').val(data.heure_fin);
-                        $('#jourduplique').val(data.jour);
-                        console.log('Form data:', data); // Ajout de la vérification des données
-                    }
-                }
-            });
-
-            $('#dupliqueModal').modal('show');
-        }
-
-        function delete_tache(id) {
-            swal({
-                title: 'Suppression',
-                text: 'Voulez-vous vraiment supprimer ??',
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                    var url = "/destroy/" + id;
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('DELETE', url);
-                    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            var response = JSON.parse(xhr.responseText);
-                            console.log(response);
-                            if (response === 'ok') {
-                                swal('Suppression réussie avec succès !!', {
-                                    icon: 'success',
-                                });
-                                location.reload();
-                            } else {
-                                swal('Une erreur est survenue  !!', {
-                                    icon: 'error',
-                                });
-                            }
-                        } else {
-                            swal('Une erreur est survenue  !!', {
-                                icon: 'error',
-                            });
-                        }
-                    };
-                    xhr.send();
-                }
-            });
-        }
-    </script>
-@endpush

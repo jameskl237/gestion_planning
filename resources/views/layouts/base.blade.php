@@ -122,7 +122,8 @@
                                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                             </svg><span>Plannifier</span></a>
                         <ul class="dropdown-menu" style="display: none;">
-                            <li><a class="nav-link" href="{{ route('plannings') }}">Planning Cours & TD</a></li>
+                            <li><a class="nav-link" href="{{ route('mine') }}">Mon planning</a></li>
+                            <li><a class="nav-link" href="{{ route('plannings') }}">Planning hebdomadaire</a></li>
                             <li><a class="nav-link" href="{{ route('eval') }}">Planning evaluation</a></li>
                         </ul>
                     </li>

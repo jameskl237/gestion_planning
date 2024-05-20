@@ -198,7 +198,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Toastr' => Yoeunes\Toastr\Facades\Toastr::class,
 	    // Façade Laravel-dompdf
-	    // "PDF" => Barryvdh\DomPDF\Facade::class
+	    "PDF" => Barryvdh\DomPDF\Facade::class
     ])->toArray(),
 
 ];

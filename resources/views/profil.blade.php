@@ -22,7 +22,7 @@
                                     <div class="card">
                                         <div class="card-header">
 
-                                            <h4>User information</h4>
+                                            <h4>Informations</h4>
                                         </div>
                                         <div class="card-body">
                                             <div class="form-group">
@@ -38,7 +38,7 @@
                                                             <i class="fas fa-lock"></i>
                                                         </div>
                                                     </div>
-                                                    <input type="password" name="password" value="{{ $user->password }}" class="form-control pwstrength"
+                                                    <input type="password" name="password" class="form-control pwstrength"
                                                         data-indicator="pwindicator">
                                                 </div>
                                             </div>

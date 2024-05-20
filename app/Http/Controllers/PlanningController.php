@@ -96,6 +96,12 @@ class PlanningController extends Controller
             ->stream();
     }
 
+    public function generatePDF()
+    {
+        $pdf = PDF::loadView('pdf');
+        return $pdf->download('planning.pdf');
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -222,7 +228,7 @@ class PlanningController extends Controller
                     $todo->name = $request->name;
                     $todo->description = $request->description;
                     $todo->date_debut = Carbon::now()->toDateString();
-                    $todo->date_fin = Carbon::now()->toDateString();
+                    $todo->date_fin = '';
                     $todo->heure_debut = $request->heure_debut;
                     $todo->heure_fin = $request->heure_fin;
                     $todo->jour = $request->jour;
@@ -368,75 +374,74 @@ class PlanningController extends Controller
     }
 
     public function duplique_tache(Request $request, $id)
-{
-    try {
+    {
+        try {
 
-        $plan = Todo_planning::where('todo_id', $id)->first();
+            $plan = Todo_planning::where('todo_id', $id)->first();
 
-        // Vérifiez si une tâche existe déjà avec les mêmes horaires et le même jour
-        $existingTask = Todo::where('id', '!=', $id)
-            ->where('heure_debut', $request->heure_debutduplique)
-            ->where('heure_fin', $request->heure_finduplique)
-            ->where('jour', $request->jourduplique)
-            ->exists();
+            // Vérifiez si une tâche existe déjà avec les mêmes horaires et le même jour
+            $existingTask = Todo::where('id', '!=', $id)
+                ->where('heure_debut', $request->heure_debutduplique)
+                ->where('heure_fin', $request->heure_finduplique)
+                ->where('jour', $request->jourduplique)
+                ->exists();
 
-        if ($existingTask) {
-            toastr()->error('Erreur', 'Marge horaire occupée');
-            return redirect()->back();
-        } else {
-            // Validation des champs requis
-            $request->validate([
-                'heure_debutduplique' => 'required',
-                'heure_finduplique' => 'required',
-                'jourduplique' => 'required',
-            ]);
+            if ($existingTask) {
+                toastr()->error('Erreur', 'Marge horaire occupée');
+                return redirect()->back();
+            } else {
+                // Validation des champs requis
+                $request->validate([
+                    'heure_debutduplique' => 'required',
+                    'heure_finduplique' => 'required',
+                    'jourduplique' => 'required',
+                ]);
 
-            $user = auth()->user();
-            $todo_init = Todo::find($id);
+                $user = auth()->user();
+                $todo_init = Todo::find($id);
 
-            // Créez une nouvelle tâche basée sur les données de la tâche initiale
-            $todo = new Todo();
-            $todo->name = $todo_init->name;
-            $todo->description = $todo_init->description;
-            $todo->date_debut = $todo_init->date_debut;
-            $todo->date_fin = $todo_init->date_debut; // Est-ce que c'est correct ?
-            $todo->heure_debut = $request->heure_debutduplique;
-            $todo->heure_fin = $request->heure_finduplique;
-            $todo->jour = $request->jourduplique;
-            $todo->user_id = $user->id;
-            $todo->save();
+                // Créez une nouvelle tâche basée sur les données de la tâche initiale
+                $todo = new Todo();
+                $todo->name = $todo_init->name;
+                $todo->description = $todo_init->description;
+                $todo->date_debut = $todo_init->date_debut;
+                $todo->date_fin = $todo_init->date_debut; // Est-ce que c'est correct ?
+                $todo->heure_debut = $request->heure_debutduplique;
+                $todo->heure_fin = $request->heure_finduplique;
+                $todo->jour = $request->jourduplique;
+                $todo->user_id = $user->id;
+                $todo->save();
 
-            // Créez une liaison avec le planning
-            $liaison = new Todo_planning();
-            $liaison->todo_id = $todo->id;
-            $liaison->planning_id = $plan->planning_id;
-            $liaison->save();
+                // Créez une liaison avec le planning
+                $liaison = new Todo_planning();
+                $liaison->todo_id = $todo->id;
+                $liaison->planning_id = $plan->planning_id;
+                $liaison->save();
 
-            // Dupliquez la salle et le professeur associés à la tâche initiale
-            $salle_init = Todo_salle::where('todo_id', $todo_init->id)->first();
-            if ($salle_init) {
-                $salle = new Todo_salle();
-                $salle->todo_id = $todo->id;
-                $salle->salle_id = $salle_init->salle_id;
-                $salle->save();
+                // Dupliquez la salle et le professeur associés à la tâche initiale
+                $salle_init = Todo_salle::where('todo_id', $todo_init->id)->first();
+                if ($salle_init) {
+                    $salle = new Todo_salle();
+                    $salle->todo_id = $todo->id;
+                    $salle->salle_id = $salle_init->salle_id;
+                    $salle->save();
+                }
+
+                $prof_init = Todo_user::where('todo_id', $todo_init->id)->first();
+                if ($prof_init) {
+                    $prof = new Todo_user();
+                    $prof->todo_id = $todo->id;
+                    $prof->user_id = $prof_init->user_id;
+                    $prof->save();
+                }
+
+                toastr()->success('Success', 'Opération réussie');
+                return redirect()->back();
             }
-
-            $prof_init = Todo_user::where('todo_id', $todo_init->id)->first();
-            if ($prof_init) {
-                $prof = new Todo_user();
-                $prof->todo_id = $todo->id;
-                $prof->user_id = $prof_init->user_id;
-                $prof->save();
-            }
-
-            toastr()->success('Success', 'Opération réussie');
-            return redirect()->back();
-
+        } catch (\Exception $e) {
+            return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
-    } catch (\Exception $e) {
-        return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
     }
-}
 
 
     // modification d'une tache dans un planning
@@ -508,5 +513,19 @@ class PlanningController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
         }
+    }
+
+    public function myPlanning()
+    {
+        $user = auth()->user();
+        $tod = Todo_user::where('user_id', $user->id)->get();
+        $var = $tod->pluck('todo_id');
+        $task = Todo::whereIn('id', $var)
+            ->where('jour', '!=', '')->get();
+
+        $salle = Salle::all();
+        // $planning = Planning::find($id);
+
+        return view('myPlanning', compact('task','salle'));
     }
 }
