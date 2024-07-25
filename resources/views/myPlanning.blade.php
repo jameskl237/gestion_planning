@@ -1,4 +1,5 @@
-@extends('layouts.base')
+@extends($layouts)
+
 
 @section('style')
     <!-- Inclure les styles CSS de FullCalendar -->
@@ -22,7 +23,7 @@
                         <div class="card-header d-flex justify-content-between">
 
                             <h4>Mon planning </h4>
-                            <form method="get" action="{{ route('pdf') }}">
+                            <form method="get" action="">
                                 <button type="submit" class="btn btn-primary" id="generatePdf">Générer PDF</button>
                             </form>
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -407,6 +408,7 @@
                                                                     onclick="duplique_tache({{ $t->id }})">
                                                                     {{ $t->name }}<br>
                                                                     {{ $t->description }}<br>
+                                                                    Delivree par {{ $t->user->name }}
                                                                     <br>salle:
                                                                     @if ($s)
                                                                         {{ $s->name }}
@@ -414,6 +416,7 @@
                                                                         Nom de la salle non disponible
                                                                     @endif
                                                                 </a>
+                                                                {{-- {{ $tache->name }} --}}
                                                                 {{-- <div class="d-flex">
                                                                     <a class="btn btn-primary btn-action mr-1"
                                                                         onclick="edit_tache({{ $t->id }});"
@@ -591,7 +594,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form class="" method="POST" action="">
+                    <form class="" method="POST" action="{{ route('addMyTask') }}">
 
                         @csrf
                         @method('POST')

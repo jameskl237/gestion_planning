@@ -27,7 +27,8 @@ class TodoController extends Controller
         $us = Todo_user::where('user_id', $user->id)->get();
         $var = $us->pluck('todo_id');
         $arr = Todo::whereIn('id', $var)->get();
-        return view('welcome', compact('arr'));
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
+        return view('welcome', compact('arr','layouts'));
     }
 
     /**
@@ -42,19 +43,20 @@ class TodoController extends Controller
     public function notification()
     {
         $user = auth()->user();
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
         $us = Todo_user::where('user_id', $user->id)
             ->where('is_view', '0')->get();
         $var = $us->pluck('todo_id');
         $table = Todo::whereIn('id', $var)
             ->where('user_id', '!=', $user->id)->get();
-        return view('layouts.base', compact('table'));
+        return view('newtasks', compact('table','layouts'));
     }
 
     // Fonction pour gerer les notifications  vues
 
     public function is_view($id)
     {
-
+  
         $task = Todo_user::where('todo_id', $id)->first();
         $task->is_view = '1';
         $task->save();
@@ -65,7 +67,9 @@ class TodoController extends Controller
 
     public function programmer()
     {
-        return view('programmer_personnel');
+        $user = auth()->user();
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
+        return view('programmer_personnel', compact('layouts'));
     }
 
 
@@ -92,6 +96,7 @@ class TodoController extends Controller
                 return redirect()->route('welcome');
             } else {
                 $user = auth()->user();
+
                 $todo = new Todo();
 
                 $todo->name = $request->name;
@@ -330,4 +335,69 @@ class TodoController extends Controller
             200
         );
     }
+
+    public function storemytask(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $me = Todo_user::where('user_id', $user->id)->get();
+
+            $tache = Todo::whereIn('id', $me->pluck('todo_id'))
+                ->where('heure_debut', '=', $request->heure_debut)
+                ->where('heure_fin', '=', $request->heure_fin)
+                ->where('jour', $request->jour)
+                ->get();
+
+            if ($tache->isNotEmpty()) {
+                toastr()->error('Erreur', 'Marge horaire occupée par une de vos taches');
+                return redirect()->route('mine');
+            } else {
+                if (empty($request->heure_debut) || empty($request->heure_fin)) {
+                    toastr()->error('Erreur', 'Remplissez les champs requis');
+                    return redirect()->route('mine');
+                } else {
+                    $todo = new Todo();
+
+                    $todo->name = $request->name;
+                    $todo->description = $request->description;
+                    $todo->date_debut = '';
+                    $todo->date_fin = '';
+                    $todo->heure_debut = $request->heure_debut;
+                    $todo->heure_fin = $request->heure_fin;
+                    $todo->jour = $request->jour;
+                    $todo->user_id = $user->id;
+
+
+                    $salle = new Todo_salle();
+                    $prof = new Todo_user();
+
+                    if ($request->heure_debut >= $request->heure_fin) {
+                        toastr()->error('Erreur', 'L\'heure de début doit être antérieure à l\'heure de fin');
+                        return redirect()->route('mine');
+                    }
+                    $todo->save();
+
+            
+
+                    if ($request->salle != NULL) {
+                        $salle->todo_id = $todo->id;
+                        $salle->salle_id = $request->salle;
+                        $salle->save();
+                    }
+
+                    if ($request->sub != NULL) {
+                        $prof->todo_id = $todo->id;
+                        $prof->user_id = $user->id;
+                        $prof->save();
+                    }
+
+                    toastr()->success('Success', 'Opération réussie');
+                    return redirect()->route('mine');
+                }
+            }
+        } catch (\Exception $e) {
+            // toastr()->error('Erreur', "Une erreur s'est produite");
+            return back()->with('error', 'Une erreur est survenue lors de l\'enregistrement : ' . $e->getMessage());
+        }
+}
 }

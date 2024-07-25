@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             Todo::factory(3)
         )->create();
 
+        $this->call(UserSeeder::class);
         $this->call(PlanningSeeder::class);
         $this->call(Todo_userSeeder::class);
         $this->call(Todo_planningSeeder::class);

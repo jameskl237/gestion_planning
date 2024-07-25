@@ -15,10 +15,11 @@ class CalendarController extends Controller
     public function calendar()
     {
         $user = auth()->user();
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
         $us = Todo_user::where('user_id', $user->id)->get();
         $var = $us->pluck('todo_id');
         $arr = Todo::whereIn('id', $var)->get();
-        return view('calendar', compact('arr'));
+        return view('calendar', compact('arr','layouts'));
     }
 
     // Fonction qui permet de traiter les taches du calendrier et les passer a travers une route

@@ -62,11 +62,11 @@
                             </button>
                         </div>
                     </form>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <a class="btn btn-primary btn-action mr-1 mt-2 mb-4" href="{{route('inscrire')}}" title="s'incrire">
                             <i class="fas fa-pencil-alt"></i> s'inscrire
                         </a>
-                    </div>
+                    </div> --}}
                     <div class="text-center mt-4 mb-3">
                      </div>
                     <div class="row sm-gutters">

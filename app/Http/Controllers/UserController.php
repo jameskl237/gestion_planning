@@ -18,17 +18,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        $role = Role::where('rang','!=','1')->get();
+        $role = Role::where('rang', '!=', '1')->get();
         $departement = Departement::all();
         return view('inscription', compact('role', 'departement'));
     }
 
     public function profil()
     {
-        $user= auth()->user();
+        $user = auth()->user();
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
         $role = Role::find($user->role_id);
         $dep = Departement::find($user->departement_id);
-        return view('profil',compact('user', 'role', 'dep'));
+        return view('profil', compact('user', 'role', 'dep', 'layouts'));
     }
     /**
      * Show the form for creating a new resource.
@@ -84,13 +85,12 @@ class UserController extends Controller
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images'), $imageName);
-                $new_user->image = $imageName ? $imageName:'NULL';
+                $new_user->image = $imageName ? $imageName : 'NULL';
             }
 
             $new_user->save();
-            toastr()->success('success',"Utilisateur enregistré avec succès");
+            toastr()->success('success', "Utilisateur enregistré avec succès");
             return redirect()->route('auth.login');
-
         } catch (\Exception $e) {
             toastr()->error('error', "Une erreur s\'est produite ");
             return redirect()->back()->with('error', 'Une erreur s\'est produite : ' . $e->getMessage());
@@ -145,28 +145,87 @@ class UserController extends Controller
 
     public function getPersonnel()
     {
-
         $user = auth()->user();
-        if($user->deparetement_id == 'NULL' && $user->role_id = 1){
-            $tab = User::where('role_id', '>', $user->role_id)->get();
-        }else {
-            $tab = User::where('role_id', '>', $user->role_id)
-            ->where('departement_id', '=', $user->departement_id)
-            ->get();
+
+        if (!$user) {
+            return redirect()->route('login');
         }
-        return view('programmer_personnel', compact('tab'));
+
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
+        $tab = collect();
+
+        if ($user->departement->nom == 'NULL' && $user->role->rang == 1) {
+
+            $tab = User::whereHas('role', function ($query) {
+                $query->where('rang', '>', 1);
+            })->get();
+        } elseif ($user->departement->nom != 'NULL' && $user->role->rang >= 1) {
+
+            $tab = User::whereHas('role', function ($query) use ($user) {
+                $query->where('rang', '>', $user->role->rang);
+            })->where('departement_id', $user->departement_id)->get();
+        }
+
+        return view('programmer_personnel', compact('tab', 'layouts'));
     }
 
     public function info()
     {
         $user = auth()->user();
-        if($user->deparetement_id == 'NULL' && $user->role_id = 1){
-            $tab = User::where('role_id', '>', $user->role_id)->get();
-        }else {
-            $tab = User::where('role_id', '>', $user->role_id)
-            ->where('departement_id', '=', $user->departement_id)
-            ->get();
+
+        if (!$user) {
+            return redirect()->route('login');
         }
-        return view('info', compact('tab'));
+
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
+        $tab = collect();
+
+        if ($user->departement->nom == 'NULL' && $user->role->rang == 1) {
+
+            $tab = User::whereHas('role', function ($query) {
+                $query->where('rang', '>', 1);
+            })->get();
+        } elseif ($user->departement->nom != 'NULL' && $user->role->rang >= 1) {
+
+            $tab = User::whereHas('role', function ($query) use ($user) {
+                $query->where('rang', '>', $user->role->rang);
+            })->where('departement_id', $user->departement_id)->get();
+        }
+        return view('info', compact('tab', 'layouts'));
+    }
+
+    public function changePassword(Request $request)
+    {
+        try {
+            $user = auth()->user();
+
+            // Vérifier que tous les champs nécessaires sont remplis
+            if (empty($request->current_password) || empty($request->password) || empty($request->password_confirmation)) {
+                toastr()->error('Error', 'Remplir tous les champs');
+                return redirect()->back();
+            }
+
+            // Vérifier que le mot de passe actuel est correct
+            if (!Hash::check($request->current_password, $user->password)) {
+                toastr()->error('Error', 'Erreur sur l\'actuel mot de passe');
+                return redirect()->back();
+            }
+
+            // Vérifier que le nouveau mot de passe et sa confirmation correspondent
+            if ($request->password !== $request->password_confirmation) {
+                toastr()->error('Error', 'confirmation echouee');
+                return redirect()->back();
+            }
+
+            // Mettre à jour le mot de passe de l'utilisateur
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            toastr()->success('Success', 'Mot de passe modifie');
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            toastr()->error('Error', 'Une erreur s\'est produite ');
+            return redirect()->back()->with('error', 'une erreur s\'est produite : ' . $th->getMessage());
+        }
     }
 }

@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
 
             [
                 'name'=> 'Nkouandou',
-                'email' => 'aminou@gmail.com',
+                'email' => 'Abou@gmail.com',
                 'prenom' => 'Aboubakar',
                 'password' => Hash::make('ayobo'),
                 'image' => 'etu.PNG',

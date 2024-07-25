@@ -1,18 +1,6 @@
 @extends($layouts)
 
 
-@section('search_bar')
-    {{-- <form class="form-inline mr-auto">
-        <div class="search-element">
-            <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="200">
-            <button class="btn" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
-    </form> --}}
-@endsection
-
-
 @section('content')
     <section class="section">
         <div class="section-body">

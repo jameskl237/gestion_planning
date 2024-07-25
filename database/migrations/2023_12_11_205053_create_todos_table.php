@@ -36,6 +36,14 @@ return new class extends Migration
             $table->timestamps();
 
         });
+
+        Schema::create('todo_plannings', function (Blueprint $table){
+            $table->id()->autoIncrement();
+            $table->foreignId('planning_id')->constrained('plannings')->onDelete('cascade');
+            $table->foreignId('todo_id')->constrained('todos')->onDelete('cascade');
+            $table->timestamps();
+
+        });
     }
 
     /**

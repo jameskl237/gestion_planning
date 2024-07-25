@@ -1,4 +1,5 @@
-@extends('layouts.base')
+@extends($layouts)
+
 
 @section('style')
     <!-- Inclure les styles CSS de FullCalendar -->

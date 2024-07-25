@@ -43,10 +43,10 @@ class Todo extends Model
 
     // lien avec le model Salle
 
-    public function salle()
-    {
-        return $this->belongsToMany(Salle::class);
-    }
+    // public function salle()
+    // {
+    //     return $this->belongsToMany(Salle::class);
+    // }
 
     public function salles()
     {

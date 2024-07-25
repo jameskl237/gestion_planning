@@ -208,6 +208,19 @@ class RoleSeeder extends Seeder
                 'rang' => 2
             ],
 
+            [
+                'nom' => 'CDC',
+                'libelle' => 'Charge de cours',
+                'rang' => 4
+            ],
+
+            [
+                
+                'nom' => 'Assistant',
+                'libelle' => '',
+                'rang' => 5
+            ]
+
 
         ]);
     }

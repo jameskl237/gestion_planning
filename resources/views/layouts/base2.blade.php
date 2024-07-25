@@ -143,7 +143,7 @@
                     <li class="{{ Request::is('calendar') ? 'active' : '' }}"><a class="nav-link"
                             href="{{ route('calendar') }}"><span><i data-feather="calendar"></i>
                                 Calendrier</span></a></li>
-                    <li><a class="nav-link" href=""><span></span></a></li>
+                    <li class="{{ Request::is('gestion') ? 'active' : '' }}"><a class="nav-link" href="{{ route('gestion_index') }}"><i data-feather="edit"></i><span> Gestion systeme </span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>
                     <li><a class="nav-link" href=""><span></span></a></li>

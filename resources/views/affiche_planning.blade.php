@@ -1,4 +1,5 @@
-@extends('layouts.base')
+@extends($layouts)
+
 
 @section('style')
     <!-- Inclure les styles CSS de FullCalendar -->
@@ -25,7 +26,7 @@
                             @endphp --}}
 
                             <h4>{{ $planning->name }}</h4>
-                            <form method="get" action="{{ route('pdf') }}">
+                            <form method="get" action="{{ route('pdf', $id) }}">
                                 <button type="submit" class="btn btn-primary" id="generatePdf">Générer PDF</button>
                             </form>
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -391,56 +392,84 @@
                                                 </tr>
                                             @endforeach --}}
                                             @php
-                                            $tasksByTime = [];
-                                            foreach ($task as $t) {
-                                                $timeKey = $t->heure_debut . ' - ' . $t->heure_fin;
-                                                if (!isset($tasksByTime[$timeKey])) {
-                                                    $tasksByTime[$timeKey] = [];
+                                                $tasksByTime = [];
+                                                foreach ($task as $t) {
+                                                    $timeKey = $t->heure_debut . ' - ' . $t->heure_fin;
+                                                    if (!isset($tasksByTime[$timeKey])) {
+                                                        $tasksByTime[$timeKey] = [];
+                                                    }
+                                                    $tasksByTime[$timeKey][$t->jour] = $t;
                                                 }
-                                                $tasksByTime[$timeKey][$t->jour] = $t;
-                                            }
-                                            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-                                        @endphp
+                                                $jours = [
+                                                    'Lundi',
+                                                    'Mardi',
+                                                    'Mercredi',
+                                                    'Jeudi',
+                                                    'Vendredi',
+                                                    'Samedi',
+                                                    'Dimanche',
+                                                ];
+                                            @endphp
 
-                                        @foreach ($tasksByTime as $time => $days)
-                                            <tr>
-                                                <td>{{ $time }}</td>
-                                                @foreach ($jours as $jour)
-                                                    <td>
-                                                        @if (isset($days[$jour]))
-                                                            @php
-                                                                $t = $days[$jour];
-                                                                $sa = App\Models\Todo_salle::where('todo_id', $t->id)->first();
-                                                                $s = null;
-                                                                if ($sa) {
-                                                                    $s = App\Models\Salle::find($sa->salle_id);
-                                                                }
-                                                            @endphp
-                                                            <a class="btn" onclick="duplique_tache({{ $t->id }})">
-                                                                {{ $t->name }}<br>
-                                                                {{ $t->description }}<br>
-                                                                <br>salle:
-                                                                @if ($s)
-                                                                    {{ $s->name }}
-                                                                @else
-                                                                    Nom de la salle non disponible
-                                                                @endif
-                                                            </a>
-                                                            <div class="d-flex">
-                                                                <a class="btn btn-primary btn-action mr-1"
-                                                                   onclick="edit_tache({{ $t->id }});" title="Modifier">
-                                                                    <i class="fas fa-pencil-alt"></i>
-                                                                </a>
-                                                                <a class="btn btn-danger btn-action" title="Supprimer"
-                                                                   onclick="delete_tache({{ $t->id }});">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </a>
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                @endforeach
+                                            @foreach ($tasksByTime as $time => $days)
+                                                <tr>
+                                                    <td>{{ $time }}</td>
+                                                    @foreach ($jours as $jour)
+                                                        <td>
+                                                            @if (isset($days[$jour]))
+                                                                @php
+                                                                    $t = $days[$jour];
+                                                                    $sa = App\Models\Todo_salle::where(
+                                                                        'todo_id',
+                                                                        $t->id,
+                                                                    )->first();
+                                                                    $s = null;
+                                                                    if ($sa) {
+                                                                        $s = App\Models\Salle::find($sa->salle_id);
+                                                                    }
+
+                                                                    $prof = App\Models\Todo_user::where(
+                                                                        'todo_id',
+                                                                        $t->id,
+                                                                    )->first();
+                                                                    $enseignant = null;
+                                                                    if ($prof) {
+                                                                        $enseignant = App\Models\User::find(
+                                                                            $prof->user_id,
+                                                                        );
+                                                                    }
+                                                                @endphp
+                                                                <a class="btn"
+                                                                    onclick="duplique_tache({{ $t->id }})">
+                                                                    {{ $t->name }}<br>
+                                                                    {{ $t->description }}<br>
+                                                                    @if ($enseignant)
+                                                                        {{ $enseignant->name }}
+                                                                    @else
+                                                                        No name
+                                                                    @endif
+                                                                    <br>salle:
+                                                                    @if ($s)
+                                                                        {{ $s->name }}
+                                                                    @else
+                                                                        Nom de la salle non disponible
+                                                                    @endif
+                                                                 </a>
+                                                    <div class="d-flex">
+                                                        <a class="btn btn-primary btn-action mr-1"
+                                                            onclick="edit_tache({{ $t->id }});" title="Modifier">
+                                                            <i class="fas fa-pencil-alt"></i>
+                                                        </a>
+                                                        <a class="btn btn-danger btn-action" title="Supprimer"
+                                                            onclick="delete_tache({{ $t->id }});">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                            @endif
+                                            </td>
+                                            @endforeach
                                             </tr>
-                                        @endforeach
+                                            @endforeach
                                         </tbody>
                                     </table>
                                     <button id="saveButton" class="btn btn-primary mt-3">Enregistrer</button>

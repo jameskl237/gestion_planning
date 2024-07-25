@@ -21,7 +21,7 @@ class AuthController extends Controller
             if( Auth::attempt($credentials)){
                 session()->regenerate();
                 toastr()->success('success','Connexion reussie');
-                return redirect()->route('welcome');
+                return redirect()->route('notif');
             }
             toastr()->error('error', "une erreur s'est produite");
             return to_route('auth.login')->withErrors('email=>invalid')->onlyInput('email');

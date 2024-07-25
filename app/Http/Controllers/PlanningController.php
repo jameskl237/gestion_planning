@@ -9,10 +9,12 @@ use App\Models\Todo_salle;
 use App\Models\Salle;
 use App\Models\Todo_user;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\PDF;
 use Illuminate\Support\Carbon;
-use Dompdf\Dompdf;
+use Illuminate\Support\Facades\DB;
+// use Dompdf\Dompdf;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -28,9 +30,10 @@ class PlanningController extends Controller
     public function index()
     {
         $user = auth()->user();
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
         $planning = Planning::where('user_id', $user->id)
             ->where('type', 'cours')->get();
-        return view('plannings', compact('planning'));
+        return view('plannings', compact('planning', 'layouts'));
     }
 
     public function affiche($id)
@@ -43,15 +46,22 @@ class PlanningController extends Controller
         $planning = Planning::find($id);
 
         $user = auth()->user();
-        if ($user->deparetement_id == 'NULL') {
-            $tab = User::where('role_id', '>', $user->role_id)->get();
-        } else {
-            $tab = User::where('role_id', '>', $user->role_id)
-                ->where('departement_id', '=', $user->departement_id)
-                ->get();
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
+        $tab = collect();
+
+        if ($user->departement->nom == 'NULL' && $user->role->rang == 1) {
+
+            $tab = User::whereHas('role', function ($query) {
+                $query->where('rang', '>', 1);
+            })->get();
+        } elseif ($user->departement->nom != 'NULL' && $user->role->rang >= 1) {
+
+            $tab = User::whereHas('role', function ($query) use ($user) {
+                $query->where('rang', '>', $user->role->rang);
+            })->where('departement_id', $user->departement_id)->get();
         }
 
-        return view('affiche_planning', compact('id', 'task', 'salle', 'tab', 'planning'));
+        return view('affiche_planning', compact('id', 'task', 'salle', 'tab', 'planning', 'layouts'));
     }
 
     public function affiche_eval($id)
@@ -68,15 +78,20 @@ class PlanningController extends Controller
         $i = 1;
 
         $user = auth()->user();
-        if ($user->deparetement_id == 'NULL') {
-            $tab = User::where('role_id', '>', $user->role_id)->get();
-        } else {
-            $tab = User::where('role_id', '>', $user->role_id)
-                ->where('departement_id', '=', $user->departement_id)
-                ->get();
-        }
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
+        $role = Role::find($user->role_id);
+        $allUsers = User::with('role')->get();
 
-        return view('affiche_eval', compact('id', 'ta', 'salle', 'sal', 'i', 'tab'));
+        if (is_null($user->departement_id) && $role->rang == 1) {
+            $tab = $allUsers->filter(function ($u) use ($user) {
+                return $u->role->rang > $user->role->rang;
+            });
+        } else {
+            $tab = $allUsers->filter(function ($u) use ($user) {
+                return $u->role->rang > $user->role->rang && $u->departement_id == $user->departement_id;
+            });
+        }
+        return view('affiche_eval', compact('id', 'ta', 'salle', 'sal', 'i', 'tab', 'layouts'));
     }
 
     public function getPdf($id)
@@ -96,9 +111,31 @@ class PlanningController extends Controller
             ->stream();
     }
 
-    public function generatePDF()
+    public function generatePDF($id)
     {
-        $pdf = PDF::loadView('pdf');
+        $todplan = Todo_planning::where('planning_id', $id)->get();
+        $var = $todplan->pluck('todo_id');
+        $task = Todo::whereIn('id', $var)->get();
+
+        $salle = Salle::all();
+        $planning = Planning::find($id);
+
+        $user = auth()->user();
+        $role = Role::find($user->role_id);
+        $allUsers = User::with('role')->get();
+
+        if (is_null($user->departement_id) && $role->rang == 1) {
+            $tab = $allUsers->filter(function ($u) use ($user) {
+                return $u->role->rang > $user->role->rang;
+            });
+        } else {
+            $tab = $allUsers->filter(function ($u) use ($user) {
+                return $u->role->rang > $user->role->rang && $u->departement_id == $user->departement_id;
+            });
+        }
+
+
+        $pdf = Pdf::loadView('pdf', compact('id', 'task', 'salle', 'tab', 'planning'));
         return $pdf->download('planning.pdf');
     }
 
@@ -286,25 +323,34 @@ class PlanningController extends Controller
 
     public function store_tache_eval(Request $request, $id)
     {
-        $salle = Salle::where('name', $request->salle)->first();
-
+        // Trouver la salle
+        $salle = Salle::find($request->salle);
+    
+        // Trouver les tâches qui se chevauchent
         $ta = Todo::where('date_debut', '=', $request->date_debut)
             ->where('heure_debut', '=', $request->heure_debut)
             ->where('heure_fin', '=', $request->heure_fin)->get();
-
-        if ($ta) {
-            toastr()->error('Erreur', 'Date et horaire déjà utilisées pour une autre evaluation');
-            return redirect()->route('affiche_eval', $id);
+    
+        // Vérifier si la salle est déjà utilisée
+        foreach ($ta as $t) {
+            foreach ($t->salles as $s) {
+                if ($s->name == $salle->name) {
+                    toastr()->error('Erreur', 'Date et horaire déjà utilisées pour une autre évaluation');
+                    return redirect()->route('affiche_eval', $id);
+                }
+            }
         }
-
+    
+        // Vérifier que l'heure de début est antérieure à l'heure de fin
         if ($request->heure_debut >= $request->heure_fin) {
             toastr()->error('Erreur', 'L\'heure de début doit être antérieure à l\'heure de fin');
             return redirect()->route('affiche_eval', $id);
         }
-
+    
+        // Créer une nouvelle tâche
         $user = auth()->user();
         $todo = new Todo();
-
+    
         $todo->name = $request->name;
         $todo->description = 'NULL';
         $todo->date_debut = $request->date_debut;
@@ -313,39 +359,44 @@ class PlanningController extends Controller
         $todo->heure_fin = $request->heure_fin;
         $todo->jour = 'NULL';
         $todo->user_id = $user->id;
-
-        $liaison = new Todo_planning();
-
+    
         $todo->save();
-
+    
+        // Lier la tâche au planning
+        $liaison = new Todo_planning();
         $liaison->todo_id = $todo->id;
         $liaison->planning_id = $id;
         $liaison->save();
-
-        $liaison_salle = new Todo_salle();
-
-        $liaison_salle->todo_id = $todo->id;
-        $liaison_salle->salle_id = $request->salle;
-        $liaison_salle->save();
-
-        $prof = new Todo_user();
-
-        $prof->todo_id = $todo->id;
-        $prof->user_id = $request->sub;
-        $prof->save();
-
-
+    
+        // Lier la tâche à la salle
+        if ($request->salle != NULL) {
+            $liaison_salle = new Todo_salle();
+            $liaison_salle->todo_id = $todo->id;
+            $liaison_salle->salle_id = $request->salle;
+            $liaison_salle->save();
+        }
+    
+        // Lier la tâche à l'utilisateur (professeur)
+        if ($request->sub != NULL) {
+            $prof = new Todo_user();
+            $prof->todo_id = $todo->id;
+            $prof->user_id = $request->sub;
+            $prof->save();
+        }
+    
         toastr()->success('Success', 'Opération réussie');
         return redirect()->route('affiche_eval', $id);
     }
+    
 
 
     public function plannings_eval()
     {
         $user = auth()->user();
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
         $planning = Planning::where('user_id', $user->id)
             ->where('type', 'evaluation')->get();
-        return view('evaluation', compact('planning'));
+        return view('evaluation', compact('planning', 'layouts'));
     }
 
     public function destroy_planning($id)
@@ -471,7 +522,7 @@ class PlanningController extends Controller
                     $todo->name = $request->namemodif;
                     $todo->description = $request->descriptionmodif;
                     $todo->date_debut = Carbon::now()->toDateString();
-                    $todo->date_fin = Carbon::now()->toDateString();
+                    $todo->date_fin = '';
                     $todo->heure_debut = $request->heure_debutmodif;
                     $todo->heure_fin = $request->heure_finmodif;
                     $todo->jour = $request->jourmodif;
@@ -518,14 +569,19 @@ class PlanningController extends Controller
     public function myPlanning()
     {
         $user = auth()->user();
-        $tod = Todo_user::where('user_id', $user->id)->get();
-        $var = $tod->pluck('todo_id');
-        $task = Todo::whereIn('id', $var)
-            ->where('jour', '!=', '')->get();
 
+        $layouts = $user->role->nom == 'VDPSAA' ? 'layouts.base2' : 'layouts.base';
+        $tod = DB::table('todo_users')->where('user_id', $user->id)->pluck('todo_id');
+
+        // Récupérer les tâches avec les jours définis
+        $task = Todo::whereIn('id', $tod)
+            ->where('jour', '!=', '')
+            ->get();
+
+        // $tache = $user->taches->get();
         $salle = Salle::all();
         // $planning = Planning::find($id);
 
-        return view('myPlanning', compact('task','salle'));
+        return view('myPlanning', compact('task', 'salle', 'layouts'));
     }
 }

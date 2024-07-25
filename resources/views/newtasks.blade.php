@@ -1,4 +1,5 @@
-@extends('layouts.base')
+@extends($layouts)
+
 
 
 @section('search_bar')

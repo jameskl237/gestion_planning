@@ -1,4 +1,6 @@
-@extends('layouts.base')
+@extends($layouts)
+
+
 @section('content')
     <section class="section">
         <div class="section-body">

@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends($layouts)
 
 @section('content')
     <section class="section">
@@ -162,7 +162,7 @@
                         <div class="setting-panel-header">Setting Panel
                         </div>
                         <div class="p-15 border-bottom">
-                            <h6 class="font-medium m-b-10">Select Layout</h6>
+                            <h6 class="font-medium m-b-10">Select layouts</h6>
                             <div class="selectgroup layout-color w-50">
                                 <label class="selectgroup-item">
                                     <input type="radio" name="value" value="1"

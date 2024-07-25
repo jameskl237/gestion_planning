@@ -1,4 +1,5 @@
-@extends('layouts.base')
+@extends($layouts)
+
 
 @section('content')
     <section class="section">
@@ -29,8 +30,6 @@
                                                                 href="{{ route('affiche_planning', $plan->id) }}">{{ $plan->name }}</a>
                                                         </h3>
                                                         <span class="text-muted">{{ $plan->description }}</span>
-
-
                                                     </div>
                                                      <!-- Bouton pour effectuer la suppression -->
                                                         <a class="btn btn-danger btn-action" title="Supprimer"
