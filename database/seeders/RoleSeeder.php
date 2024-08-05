@@ -219,8 +219,21 @@ class RoleSeeder extends Seeder
                 'nom' => 'Assistant',
                 'libelle' => '',
                 'rang' => 5
-            ]
+            ],
+            
+            [
+                
+                'nom' => 'Professeur',
+                'libelle' => '',
+                'rang' => 4
+            ],
 
+            [
+                
+                'nom' => 'Secretaire',
+                'libelle' => '',
+                'rang' => 4
+            ]
 
         ]);
     }

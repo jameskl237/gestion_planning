@@ -10,8 +10,8 @@
 <body>
     <div class="container-fluid h-100 d-flex align-items-center justify-content-center">
         <div class="jumbotron text-center">
-            <h1 class="display-4">Bienvenue à la Gestion de Planning</h1>
-            <p class="lead">Gérez facilement votre planning et vos tâches avec notre application.</p>
+            <h1 class="display-4">Bienvenue sur StaffPlanner</h1>
+            <p class="lead">Gérez facilement votre planning et vos tâches.</p>
             <hr class="my-4">
             <p>Commencez dès maintenant en vous connectant à votre compte.</p>
             <a class="btn btn-primary btn-lg" href="{{ route('auth.login') }}" role="button">Se connecter</a>

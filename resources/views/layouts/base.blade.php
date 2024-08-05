@@ -75,7 +75,7 @@
                             if (Auth::user()) {
                                 $im = Auth::user()->image;
                             } else {
-                                $im = 'public\template\assets\img\banner\1.png';
+                                $im = asset('public\template\assets\img\banner\1.png');
                             }
                         @endphp
                         <li class="dropdown"><a href="#" data-toggle="dropdown"

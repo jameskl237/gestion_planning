@@ -8,9 +8,9 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                            <h4>Listes des taches</h4>
+                            <h4>Listes des utilisateurs</h4>
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                Ajoutez une nouvelle tache
+                                Ajoutez un nouvel utilisateur
                             </button>
                         </div>
                         <div class="card-body">
@@ -38,48 +38,32 @@
                                                     rowspan="1" colspan="1"
                                                     aria-label="Age: activate to sort column ascending"
                                                     style="width: 25px;">Heure de fin</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Start date: activate to sort column ascending"
-                                                    style="width: 60px;">Date de debut</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Salary: activate to sort column ascending"
-                                                    style="width: 51px;">Date de fin</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Salary: activate to sort column ascending"
-                                                    style="width: 51px;">Action</th>
-
-
+                                               
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($arr as $val)
+                                            {{-- @foreach ($arr as $val) --}}
                                                 <tr role="row" class="odd">
-                                                    <td class="sorting_1"><a
-                                                            href="{{ route('calendar') }}">{{ $val->name }}</a></td>
-                                                    <td>{{ $val->description }}</td>
-                                                    <td>{{ $val->heure_debut }}</td>
-                                                    <td>{{ $val->heure_fin }}</td>
-                                                    <td>{{ $val->date_debut }}</td>
-                                                    <td>{{ $val->date_fin }}</td>
+                                                    <td class="sorting_1"><a href=""></a></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
                                                     {{-- <td style="display: flex"> --}}
                                                     <td>
                                                         <!-- Bouton pour appeler le modal de modification -->
                                                         <a class="btn btn-primary btn-action mr-1"
-                                                            onclick="edit_tache({{ $val->id }});" title="Modifier">
+                                                            onclick="edit_tache();" title="Modifier">
                                                             <i class="fas fa-pencil-alt"></i>
                                                         </a>
 
                                                         <!-- Bouton pour effectuer la suppression -->
                                                         <a class="btn btn-danger btn-action" title="Supprimer"
-                                                            onclick="event.preventDefault();delete_tache({{ $val->id }});">
+                                                            onclick="event.preventDefault();delete_tache(});">
                                                             <i class="fas fa-trash"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                            {{-- @endforeach --}}
                                         </tbody>
                                     </table>
 

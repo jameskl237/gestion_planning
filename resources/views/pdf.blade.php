@@ -1,186 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title></title>
+    <title>Emploi du Temps</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 2px solid black;
+        }
+
+        .header-left,
+        .header-right {
+            width: 30%;
+            text-align: left;
+        }
+
+        .header-center {
+            width: 40%;
+            text-align: center;
+        }
+
+        .header p {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+
+        .title {
+            margin: 20px 0;
+        }
+
+        .title h2,
+        .title h3 {
+            margin: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            border-top: 2px solid black;
+            margin-top: 20px;
+        }
+
+        .footer-left,
+        .footer-right {
+            width: 30%;
+            text-align: center;
+        }
+
+        .footer-center {
+            width: 40%;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        img {
+            height: 80px;
+            width: auto;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="d-flex flex-row mt-5">
-
-
-        <!-- DEVISE EN FRANCAIS -->
-        <div class="text-center" style="margin-bottom:30px; flex:1">
-
-            <div>
-                <h4 class="fw-bold text-uppercase">république du cameroun</h4>
-                <h5><i>Paix - travail - Patrie</i></h5>
-                <h6>- . - . - . -</h6>
-            </div>
-
-            <div>
-                <h4 class="fw-bold text-uppercase">université de yaoundé i</h4>
-                <h5 class="fw-bold">Faculté des sciences</h5>
-                <h5><i>Département d'informatique</i></h5>
-                <h6><i>B.P 812 Yaoundé</i></h6>
-            </div>
-
+    <div class="header">
+        <div class="header-left">
+            <p>REPUBLIQUE DU CAMEROUN<br>Paix – Travail – Patrie</p>
+            <p>UNIVERSITÉ DE YAOUNDÉ I<br>Faculté des Sciences<br>Département d'Informatique<br>B.P. 812 Yaoundé</p>
         </div>
-
-        <!-- LOGO UNIVERSITE -->
-        <div class="text-center" style="margin-bottom:50px; flex:1;
-        display: flex;
-        align-content: center;
-        justify-content: center;">
-        {{-- reglage de la taille du logo --}}
-            <img src="{{ asset('images/logo_universite.png') }}" width="130" alt="" srcset="">
+        <div class="header-center">
+            <img src="public/images/logoblack.jpeg" alt="University Logo">
         </div>
-
-        <!-- DEVISE EN ANGLAIS -->
-        <div class="text-center" style="margin-bottom:30px; flex:1">
-
-            <div>
-                <h4 class="fw-bold text-uppercase">Republic of Cameroon</h4>
-                <h5><i>Peace - Work - Fatherland</i></h5>
-                <h6>- . - . - . -</h6>
-            </div>
-
-            <div>
-                <h4 class="fw-bold text-uppercase">University of Yaoundé I</h4>
-                <h5 class="fw-bold">Faculty of Science</h5>
-                <h5><i>Department of Computer Science</i></h5>
-                <h6><i>P.O. Box 812 Yaoundé</i></h6>
-            </div>
-
+        <div class="header-right">
+            <p>REPUBLIC OF CAMEROON<br>Peace – Work – Fatherland</p>
+            <p>UNIVERSITY OF YAOUNDÉ I<br>Faculty of Sciences<br>Department of Computer Science<br>P.O.Box 812 Yaoundé</p>
         </div>
     </div>
+    <div class="title">
+        <h2>EMPLOI DU TEMPS</h2>
+        <h3>SEMESTRE 2_ ANNEE ACADEMIQUE 2023-2024</h3>
+        <h3>FILIERE ICT4D-ICTL3</h3>
+        <h3>SALLE: S107</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Horaire</th>
+                <th>Lundi</th>
+                <th>Mardi</th>
+                <th>Mercredi</th>
+                <th>Jeudi</th>
+                <th>Vendredi</th>
+                <th>Samedi</th>
+                <th>Dimanche</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php
+                $tasksByTime = [];
+                foreach ($task as $t) {
+                    $timeKey = $t->heure_debut . ' - ' . $t->heure_fin;
+                    if (!isset($tasksByTime[$timeKey])) {
+                        $tasksByTime[$timeKey] = [];
+                    }
+                    $tasksByTime[$timeKey][$t->jour] = $t;
+                }
+                $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            @endphp
 
-    <section class="section">
-        <div class="section-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            {{-- @php
-                                $planning = App\Models\Planning::find($id);
-                            @endphp --}}
+            @foreach ($tasksByTime as $time => $days)
+                <tr>
+                    <td>{{ $time }}</td>
+                    @foreach ($jours as $jour)
+                        <td>
+                            @if (isset($days[$jour]))
+                                @php
+                                    $t = $days[$jour];
+                                    $sa = App\Models\Todo_salle::where('todo_id', $t->id)->first();
+                                    $s = null;
+                                    if ($sa) {
+                                        $s = App\Models\Salle::find($sa->salle_id);
+                                    }
 
-                            <h4>{{ $planning->name }}</h4>
-                        
-                                <button type="submit" class="btn btn-primary"  id="generatePdf"><a href="{{ route('pdf',$id) }}">Générer PDF</a></button>
-                          
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                Ajoutez une nouvelle tache
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <div id="tableExport_wrapper"
-                                    class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
-                                    <table class="table table-striped table-hover dataTable no-footer" id="tableExport"
-                                        style="width: 100%;" role="grid" aria-describedby="tableExport_info">
-                                        <thead>
-                                            <tr role="row">
-                                                <th class="sorting_asc" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1" aria-sort="ascending"
-                                                    aria-label="Name: activate to sort column descending"
-                                                    style="width: 89px;">Heure
-
-                                                </th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Position: activate to sort column ascending"
-                                                    style="width: 140px;">Lundi</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Office: activate to sort column ascending"
-                                                    style="width: 61px;">Mardi</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Age: activate to sort column ascending"
-                                                    style="width: 25px;">Mercredi</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Age: activate to sort column ascending"
-                                                    style="width: 25px;">Jeudi</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Age: activate to sort column ascending"
-                                                    style="width: 25px;">Vendredi</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Age: activate to sort column ascending"
-                                                    style="width: 25px;">samedi</th>
-                                                <th class="sorting" tabindex="0" aria-controls="tableExport"
-                                                    rowspan="1" colspan="1"
-                                                    aria-label="Age: activate to sort column ascending"
-                                                    style="width: 25px;">Dimanche</th>
-                                            </tr>
-
-                                        </thead>
-                                        <tbody>
-                                            @php
-                                            $tasksByTime = [];
-                                            foreach ($task as $t) {
-                                                $timeKey = $t->heure_debut . ' - ' . $t->heure_fin;
-                                                if (!isset($tasksByTime[$timeKey])) {
-                                                    $tasksByTime[$timeKey] = [];
-                                                }
-                                                $tasksByTime[$timeKey][$t->jour] = $t;
-                                            }
-                                            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-                                        @endphp
-
-                                        @foreach ($tasksByTime as $time => $days)
-                                            <tr>
-                                                <td>{{ $time }}</td>
-                                                @foreach ($jours as $jour)
-                                                    <td>
-                                                        @if (isset($days[$jour]))
-                                                            @php
-                                                                $t = $days[$jour];
-                                                                $sa = App\Models\Todo_salle::where('todo_id', $t->id)->first();
-                                                                $s = null;
-                                                                if ($sa) {
-                                                                    $s = App\Models\Salle::find($sa->salle_id);
-                                                                }
-                                                            @endphp
-                                                            <a class="btn" onclick="duplique_tache({{ $t->id }})">
-                                                                {{ $t->name }}<br>
-                                                                {{ $t->description }}<br>
-                                                                <br>salle:
-                                                                @if ($s)
-                                                                    {{ $s->name }}
-                                                                @else
-                                                                    Nom de la salle non disponible
-                                                                @endif
-                                                            </a>
-                                                            <div class="d-flex">
-                                                                <a class="btn btn-primary btn-action mr-1"
-                                                                   onclick="edit_tache({{ $t->id }});" title="Modifier">
-                                                                    <i class="fas fa-pencil-alt"></i>
-                                                                </a>
-                                                                <a class="btn btn-danger btn-action" title="Supprimer"
-                                                                   onclick="delete_tache({{ $t->id }});">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </a>
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                @endforeach
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                    $prof = App\Models\Todo_user::where('todo_id', $t->id)->first();
+                                    $enseignant = null;
+                                    if ($prof) {
+                                        $enseignant = App\Models\User::find($prof->user_id);
+                                    }
+                                @endphp
+                                <a>
+                                    {{ $t->name }}<br>
+                                    {{ $t->description }}<br>
+                                    @if ($enseignant)
+                                        {{ $enseignant->name }}
+                                    @else
+                                        No name
+                                    @endif
+                                    <br>salle:
+                                    @if ($s)
+                                        {{ $s->name }}
+                                    @else
+                                        Nom de la salle non disponible
+                                    @endif
+                                </a>
+                            @endif
+                        </td>
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+    <div class="footer">
+        <div class="footer-left">
+            <p>Le Chef de Département</p>
         </div>
-    </section>
-
+        <div class="footer-center">
+            <p>Le Vice-Doyen</p>
+        </div>
+        <div class="footer-right">
+            <p>Le Doyen</p>
+        </div>
+    </div>
 </body>
+
 </html>
